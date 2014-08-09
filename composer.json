@@ -1,0 +1,30 @@
+{
+    "name": "clumsy/eminem",
+    "description": "Media manager for Laravel",
+    "keywords": ["laravel", "cms", "media", "images"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tomas Buteler",
+            "email": "tbuteler@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "clumsy/assets": "dev-master"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-0": {
+            "Clumsy\\Eminem": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.3.0-dev"
+        }
+    },
+    "minimum-stability": "dev"
+}

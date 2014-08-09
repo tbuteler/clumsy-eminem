@@ -1,0 +1,16 @@
+{
+  "name": "ClumsyEminem",
+  "version": "0.2.7",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery-file-upload": "~9.5.7",
+    "photoset-grid": "*"
+  }
+}
