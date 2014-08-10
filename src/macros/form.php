@@ -45,6 +45,7 @@ Form::macro('media', function($options = array())
         'position' => $position,
     ));
 
+    $output = '';
     $media = false;
 
     if ($association_id)
@@ -89,35 +90,7 @@ Form::macro('media', function($options = array())
         }
     }
 
-    $output = '<div class="form-group fileupload-group">';
-    $output .= Form::label($id, $label);
-    $output .= '<div id="' . $id . '" class="fileupload' . ($media && !$media->isEmpty() ? '' : ' empty') . '">';
-    $output .= '<div class="fileupload-wrapper">';
-    $output .= '
-<div class="progress progress-striped active">
-    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-    </div>
-</div>';
-
-    if ($media)
-    {
-        $media->each(function($m) use(&$output, $id)
-        {
-            $output .= HTML::image($m->path, $id);
-        });
-    }
-    
-    $multiple = $allow_multiple ? ' multiple' : '';
-
-    $output .= '
-<div class="placeholders">
-    <div class="glyphicon glyphicon-camera"></div>
-    <div class="glyphicon glyphicon-plus"></div>
-</div>';
-    $output .= '</div>';
-    $output .= '</div>';
-    $output .= '<input id="' . $id . '-input" type="file" name="files[]" data-url="' . $url . '"' . $multiple . '>';
-    $output .= '</div>';
+    $output .= View::make('clumsy/eminem::media-box', compact('id', 'label', 'media', 'allow_multiple', 'url'))->render();
 
     Event::listen('Print footer scripts', function() use($id, $label, $media)
     {
