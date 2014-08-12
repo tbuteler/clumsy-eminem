@@ -1,5 +1,7 @@
 <?php namespace Clumsy\Eminem\Models;
 
+use Illuminate\Support\Facades\URL;
+
 class Media extends \Eloquent {
     
     protected $table = 'media';
