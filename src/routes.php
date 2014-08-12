@@ -27,5 +27,9 @@ Route::group(
             'as'   => 'media.unbind',
             'uses' => 'Clumsy\Eminem\Controllers\MediaController@unbind'
         ));
+ 
+        Asset::json('media', array(
+            'unbind_url' => URL::route('media.unbind')
+        ));
     }
 );

@@ -36,7 +36,6 @@ Form::macro('media', function($options = array())
     Asset::enqueue('media-management.css', 30);
     Asset::enqueue('media-management.js', 30);
     Asset::json('media', array(
-        'unbind_url' => URL::route('media.unbind'),
         'boxes'      => array(array($id, $allow_multiple)),
     ));
 
