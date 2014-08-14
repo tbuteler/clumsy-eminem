@@ -1,7 +1,10 @@
 <?php namespace Clumsy\Eminem;
 
 use Illuminate\Support\Facades\Config;
+use Clumsy\Eminem\Models\Media;
 use Clumsy\Eminem\Models\MediaAssociation;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class MediaManager {
 
@@ -17,6 +20,79 @@ class MediaManager {
     public function absolutePath()
     {        
         return public_path($this->relativePath());
+    }
+
+    public function add($file, $filename, $options = array())
+    {
+        if (!$file instanceof UploadedFile || !$file instanceof File)
+        {
+            $file = new File($file);
+        }
+
+        $defaults = array(
+            'association_id'   => null,
+            'association_type' => null,
+            'position'         => null,
+            'allow_multiple'   => false,
+        );
+
+        $options = array_merge($defaults, $options);
+        extract($options, EXTR_SKIP);
+
+        $i = 1;
+        $append = null;
+        while (file_exists($this->absolutePath() . '/' . $filename . $append))
+        {
+            $append = " ($i)";  
+            $i++;
+        }
+
+        $filename .= $append;
+        $mime_type = $file->getMimeType();
+
+        $file->move($this->absolutePath(), $filename);
+        
+        $path = $this->relativePath() . '/' . $filename;
+    
+        $media = Media::create(array(
+            'path_type' => 'relative',
+            'path'      => $path,
+            'mime_type' => $mime_type,
+        ));
+
+        if ((int)$association_id !== 0)
+        {
+            if (!$allow_multiple)
+            {
+                $existing = MediaAssociation::where('media_association_id', $association_id);
+
+                if ($association_type !== null)
+                {
+                    $existing->where('media_association_type', $association_type);
+                }
+
+                if ($position !== null)
+                {
+                    $existing->where('position', $position);
+                }
+                
+                $existing->delete();
+            }
+
+            $association = MediaAssociation::create(array(
+                'media_id'               => $media->id,
+                'media_association_type' => $association_type,
+                'media_association_id'   => $association_id,
+                'position'               => $position,
+            ));
+
+            foreach ((array)$association as $key => $value)
+            {
+                if ($key !== 'id') $media->$key = $value;
+            }
+        }
+
+        return $media;
     }
 
     public function slots($model, $id = null)
