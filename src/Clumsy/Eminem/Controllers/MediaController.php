@@ -31,76 +31,29 @@ class MediaController extends \BaseController {
 
 	    foreach ($files as $file)
 	    {
-			$mime = $file->getClientMimeType();
-
-			/*
-			if (!in_array($mime, Config::get('media.allowed')))
-			{
-				return Response::make(array(
-	        		'message' => sprintf('You have tried to upload a file that is not currently supported. Please retry with any of the following types of media: %s', implode(', ', $allowed))
-	        	), 415);
-			}
-			*/
-
-	        $filename = $file->getClientOriginalName();
-
-	        $i = 1;
-	        $append = null;
-	        while (file_exists(MediaManager::absolutePath() . '/' . $filename . $append))
-	        {
-	        	$append = " ($i)";	
-	        	$i++;
-	        }
-
-			$filename .= $append;
-
-	        $file->move(MediaManager::absolutePath(), $filename);
-	        
 	        $input = '';
-	        $path = MediaManager::relativePath() . '/' . $filename;
-	    
-	        $media = Media::create(array(
-	        	'path_type' => 'relative',
-	        	'path'		=> $path,
-	        	'mime_type' => $mime,
-	        ));
 
-	        $src = URL::to($path);
+	        $media = MediaManager::add($file);
 
 	        if ((int)$association_id !== 0)
 	        {
-	        	if (!$allow_multiple)
-	        	{
-		        	$existing = MediaAssociation::where('media_association_id', $association_id);
-
-					if ($association_type !== null)
-					{
-						$existing->where('media_association_type', $association_type);
-					}
-
-					if ($position !== null)
-					{
-						$existing->where('position', $position);
-					}
-		        	
-		        	$existing->delete();
-	        	}
-
-				$ma = MediaAssociation::create(array(
-					'media_id'	  			 => $media->id,
-					'media_association_type' => $association_type,
-					'media_association_id'   => $association_id,
-					'position'    			 => $position,
+				$media->bind(array(
+		            'association_id'   => $association_id,
+		            'association_type' => $association_type,
+		            'position'         => $position,
+		            'allow_multiple'   => $allow_multiple,
 				));
 
-				$media->id = $ma->id;
+				$media->model->association_id = $media->association->id;
 
-		        $html = View::make('clumsy/eminem::media-item', compact('media'))->render();
+		        $html = View::make('clumsy/eminem::media-item', array('media' => $media->model))->render();
 	        }
 	        else
 	        {
-				$input = Form::mediaBind($media->id, $position, $allow_multiple);
+				$input = Form::mediaBind($media->model->id, $position, $allow_multiple);
 	        }
+
+			$src = URL::to($media->model->path);
 
 	        $results[] = compact('src', 'input', 'html');
 	    }

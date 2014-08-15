@@ -49,7 +49,8 @@ Form::macro('media', function($options = array())
 
     if ($association_id)
     {
-        $media = Media::join('media_associations', 'media_associations.media_id', '=', 'media.id')
+        $media = Media::select('media.*', 'media_associations.id as association_id')
+                      ->join('media_associations', 'media_associations.media_id', '=', 'media.id')
                       ->where('media_association_id', $association_id);
                       
         if ($association_type)

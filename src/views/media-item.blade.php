@@ -7,6 +7,6 @@
             <strong>{{ trans('clumsy/eminem::all.item.mime') }}:</strong> {{ $media->mime_type }}
         </p>
     
-        <button class="media-unbind btn btn-danger" data-id="{{ $media->id }}">{{ trans('clumsy/eminem::all.item.remove') }}</button>
+        <button class="media-unbind btn btn-danger" data-id="{{ $media->association_id }}">{{ trans('clumsy/eminem::all.item.remove') }}</button>
     </div>
 </div>

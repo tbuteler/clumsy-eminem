@@ -1,5 +1,6 @@
 <?php namespace Clumsy\Eminem;
 
+use Clumsy\Eminem\Models\Media;
 use Illuminate\Support\Facades\Input;
 
 trait MediableTrait {
@@ -19,8 +20,20 @@ trait MediableTrait {
             {
                 foreach (Input::get('media_bind') as $media_id => $attributes)
                 {
-                    $association_type = \Illuminate\Support\Str::lower(class_basename($model));
-                    \Clumsy\Eminem\Facade::bind($media_id, $model->id, $association_type, $attributes);
+                    $media = Media::find($media_id);
+
+                    if ($media)
+                    {
+                        $options = array_merge(
+                            array(
+                                'association_id'   => $model->id,
+                                'association_type' => class_basename($model),
+                            ),
+                            $attributes
+                        );
+
+                        $media->bind($options);
+                    }
                 }
             }
         });
