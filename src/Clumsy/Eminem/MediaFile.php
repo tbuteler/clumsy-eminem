@@ -10,7 +10,8 @@ use Illuminate\Support\Str;
 
 class MediaFile {
 
-    public $file = null;
+    protected $file = null;
+    
     public $filename = null;
     public $mime_type = null;
     public $model = null;
@@ -39,12 +40,12 @@ class MediaFile {
         $this->checkMimeType();
     }
 
-    public function basePath()
+    protected function basePath()
     {
         return Config::get('eminem::folder');
     }
 
-    public function relativePath()
+    protected function relativePath()
     {
         $base = $this->basePath();
         
@@ -53,7 +54,7 @@ class MediaFile {
         return "$base/$organize";
     }
 
-    public function folderPath()
+    protected function folderPath()
     {        
         return public_path($this->relativePath());
     }
@@ -72,15 +73,31 @@ class MediaFile {
 
     protected function move($overwrite = false)
     {
+        preg_match('/\.\w{2,4}$/', $this->filename, $extension);
+        $extension = head($extension);
+        
+        $name = str_replace($extension, '', $this->filename);
+
         if (!$overwrite)
         {
             $i = 1;
             while (file_exists($this->folderPath().'/'.$this->filename))
             {
-                $this->filename .= " ($i)";
+                if (preg_match('/\-\d{1,}$/', $name, $count))
+                {
+                    $count = substr(head($count), 1);
+                    $name = preg_replace('/\-\d{1,}$/', (string)'-'.($count+1), $name);
+                }
+                else
+                {
+                    $name .= "-$i";
+                }
+                $this->filename = $name.$extension;
                 $i++;
             }
         }
+
+        $this->filename = Str::slug($name).$extension;
 
         $this->file->move($this->folderPath(), $this->filename);
 
@@ -131,12 +148,6 @@ class MediaFile {
 
     public function bind($options = array())
     {
-        if (!$this->model)
-        {
-            // TODO?: Throw exception
-            return $this;
-        }
-
         $this->association = $this->model->bind($options);
 
         return $this;

@@ -53,7 +53,12 @@
                         $('<img/>').attr('src', file.src).appendTo($box);
                         $box.data('raw', $box.html());
                         $box.closest('form').append(file.input);
-                        $modal.find('.current-media').append(file.html);
+                        if (options.allowMultiple) {
+                            $modal.find('.current-media').append(file.html);
+                        }
+                        else {
+                            $modal.find('.current-media').html(file.html);
+                        }
                         $box.mediaBox('updateModal');
                     });
                 },
@@ -115,6 +120,7 @@
 
             if (!this.$el.find('img').length) {
                 this.$el.addClass('empty');
+                this.$el.find('.placeholders').show();
             }
             
             this.update();
