@@ -33,7 +33,7 @@ return array(
 
     'filters' => array(
 
-        'before' => '',
+        'before' => 'csrf',
 
         'after'  => '',
     ),

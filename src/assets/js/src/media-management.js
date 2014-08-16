@@ -30,6 +30,10 @@
                     {
                         name: 'allow_multiple',
                         value: this.options.allowMultiple,
+                    },
+                    {
+                        name: '_token',
+                        value: $box.closest('form').find('input[name="_token"]').val()
                     }
                 ],
                 submit: function(e, data) {
@@ -230,21 +234,22 @@ $(function() {
         $(document).on('click', '.media-unbind', function(){
             var $item = $(this).closest('.media-item'),
                 $current = $item.closest('.current-media'),
+                slug = $current.closest('.tab-pane').attr('id').replace('-current', ''),
+                $box = $('#'+slug),
                 $img = $item.find('img');
 
-            $.post(handover.media.unbind_url+'/'+$(this).data('id'), function(data) {
-                
-                $item.fadeOut('fast', function(){
-
-                    $item.remove();
-                    
-                    var slug = $current.closest('.tab-pane').attr('id').replace('-current', ''),
-                        $box = $('#'+slug);
-
-                    $box.mediaBox('remove', $img.attr('src'));
-                    $box.mediaBox('updateModal');
-                });
-            });
+            $.post(handover.media.unbind_url+'/'+$(this).data('id'),
+                {
+                    _token: $box.closest('form').find('input[name="_token"]').val()
+                },
+                function(data) {
+                    $item.fadeOut('fast', function(){
+                        $item.remove();
+                        $box.mediaBox('remove', $img.attr('src'));
+                        $box.mediaBox('updateModal');
+                    });
+                }
+            );
         });
     }
 });
