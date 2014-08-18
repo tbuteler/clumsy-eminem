@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
+use Clumsy\Assets\Facade as Asset;
 
 /*
 |--------------------------------------------------------------------------
