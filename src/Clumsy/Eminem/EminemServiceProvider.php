@@ -36,8 +36,8 @@ class EminemServiceProvider extends ServiceProvider {
         $assets = include($this->guessPackagePath() . '/assets/assets.php');
 		Asset::batchRegister($assets);
 
+		require $this->guessPackagePath().'/helpers.php';
 		require $this->guessPackagePath().'/routes.php';
-
 		require $this->guessPackagePath().'/macros/form.php';
 		require $this->guessPackagePath().'/macros/html.php';
 	}
