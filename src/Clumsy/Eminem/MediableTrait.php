@@ -54,7 +54,7 @@ trait MediableTrait {
         return (bool)sizeof($this->media);
     }
     
-    public function mediaPath($position = null)
+    public function mediaPath($position = null, $offset = 0)
     {
         if ($this->hasMedia())
         {
@@ -64,11 +64,14 @@ trait MediableTrait {
                     {
                         return $media->position === $position;
                     })
-                    ->first();
+                    ->values();
+
+                $media = $media->offsetExists($offset) ? $media->offsetGet($offset) : null;
+
             }
             else
             {    
-                $media = $this->media->first();
+                $media = $this->media->offsetExists($offset) ? $this->media->offsetGet($offset) : null;
             }
 
             if ($media)
