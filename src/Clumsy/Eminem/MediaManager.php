@@ -22,15 +22,20 @@ class MediaManager {
     {
         $slots = array();
 
-        $defaults = array(
-            'association_type'  => $model,
-            'association_id'    => $id,
-        );
+        if (!method_exists($model, 'mediaSlots'))
+        {
+            return $slots;
+        }
 
         $defined = $model::mediaSlots();
 
         if (is_array($defined))
         {
+            $defaults = array(
+                'association_type'  => $model,
+                'association_id'    => $id,
+            );
+            
             if (!is_associative($defined))
             {
                 foreach ($defined as $slot)
