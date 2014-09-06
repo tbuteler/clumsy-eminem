@@ -19,6 +19,7 @@ class CreateMediaAssociationsTable extends Migration {
 			$table->string('media_association_type');
 			$table->integer('media_association_id')->unsigned();
 			$table->string('position')->nullable()->default(null);
+			$table->integer('order')->unsigned()->nullable()->default(null);
 			$table->text('meta')->nullable()->default(null);
 
 			$table->foreign('media_id')->references('id')->on('media');
