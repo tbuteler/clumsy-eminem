@@ -27,7 +27,12 @@ class MediaManager {
             return $slots;
         }
 
-        $defined = $model::mediaSlots();
+        if (!is_object($model))
+        {
+            $model = new $model;
+        }
+
+        $defined = $model->mediaSlots();
 
         if (is_array($defined))
         {

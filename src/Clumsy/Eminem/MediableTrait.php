@@ -44,7 +44,7 @@ trait MediableTrait {
         return $this->morphToMany('Media', 'media_association')->select(array('media.*', 'position'));
     }
 
-    public static function mediaSlots()
+    public function mediaSlots()
     {
         return false;
     }
