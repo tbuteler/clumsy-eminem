@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
-use Clumsy\Assets\Facade as Asset;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,10 +26,6 @@ Route::group(
         Route::post('media-unbind/{id?}', array(
             'as'   => 'media.unbind',
             'uses' => 'Clumsy\Eminem\Controllers\MediaController@unbind'
-        ));
- 
-        Asset::json('media', array(
-            'unbind_url' => URL::route('media.unbind')
         ));
     }
 );
