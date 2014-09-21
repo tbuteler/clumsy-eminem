@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Config;
 
 Route::group(
     array(
-        'prefix' => Config::get('eminem::prefix'),
-        'before' => Config::get('eminem::filters.before'),
-        'after'  => Config::get('eminem::filters.after'),
+        'prefix' => Config::get('clumsy/eminem::prefix'),
+        'before' => Config::get('clumsy/eminem::filters.before'),
+        'after'  => Config::get('clumsy/eminem::filters.after'),
     ),
     function()
     {

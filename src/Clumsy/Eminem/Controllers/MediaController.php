@@ -35,6 +35,16 @@ class MediaController extends \BaseController {
 
 	        $media = MediaManager::add($file);
 
+	        if ($media->hasErrors())
+	        {
+				$status = 'error';
+				$message = $media->getErrorMessage();
+				$results[] = compact('status', 'message');
+	        	continue;
+	        }
+
+	        $status = 'success';
+
 	        if ((int)$association_id !== 0)
 	        {
 				$media->bind(array(
@@ -55,7 +65,7 @@ class MediaController extends \BaseController {
 
 			$src = URL::to($media->model->path);
 
-	        $results[] = compact('src', 'input', 'html');
+	        $results[] = compact('status', 'src', 'input', 'html');
 	    }
 
 	    return array(

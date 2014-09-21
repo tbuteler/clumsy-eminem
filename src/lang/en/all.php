@@ -27,4 +27,13 @@ return array(
 
         'remove'  => 'Remove media',
     ),
+
+    'errors' => array(
+
+        'general' => 'An error occurred. Please try again later.',
+
+        'upload_size' => 'File ":filename" exceeds maximum upload size permitted by server.',
+
+        'permissions' => 'File ":filename" cannot be uploaded due to lack of permissions.',
+    ),
 );

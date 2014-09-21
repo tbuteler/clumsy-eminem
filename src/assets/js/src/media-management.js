@@ -40,6 +40,7 @@
                     $box.removeClass('dragover').find('img').remove();
                     $box.find('.placeholders').hide();
                     $box.find('.progress').show();
+                    $box.removeClass('with-error');
                 },
                 progressall: function (e, data) {
                     var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -54,6 +55,12 @@
                         $box.html($box.data('raw'));
                     }
                     $.each(data.result.files, function (index, file) {
+                        if (file.status === 'error')
+                        {
+                            alert(file.message);
+                            $box.addClass('with-error');
+                            return true;
+                        }
                         $('<img/>').attr('src', file.src).appendTo($box);
                         $box.data('raw', $box.html());
                         $box.closest('form').append(file.input);
@@ -67,7 +74,15 @@
                     });
                 },
                 fail: function(e, data) {
-                    alert(data.jqXHR.responseJSON.message);
+                    if (typeof data.jqXHR.responseJSON !== 'undefined' && typeof data.jqXHR.responseJSON.message !== 'undefined') {
+                        alert(data.jqXHR.responseJSON.message);
+                    }
+                    else {
+                        alert(handover.media.general_error);
+                    }
+                    $box.addClass('with-error');
+                    $box.mediaBox('checkEmpty');
+                    $box.mediaBox('update');
                 },
                 stop: function(e, data) {
                     if (options.allowMultiple) {
@@ -75,9 +90,7 @@
                             $box.mediaBox('update');
                         });
                     }
-                    if ($box.find('img').length) {
-                        $box.removeClass('empty');
-                    }
+                    $box.mediaBox('checkEmpty');
                 }
             });
 
@@ -121,13 +134,19 @@
             this._raw();
             this.$el.find('img[src="'+src+'"]').first().remove();
             this._store();
+            this.checkEmpty();            
+            this.update();
+        },
 
+        checkEmpty: function() {
             if (!this.$el.find('img').length) {
                 this.$el.addClass('empty');
                 this.$el.find('.placeholders').show();
             }
-            
-            this.update();
+            else {
+                $box.removeClass('empty');
+                this.$el.find('.placeholders').hide();
+            }
         },
 
         updateModal: function() {
