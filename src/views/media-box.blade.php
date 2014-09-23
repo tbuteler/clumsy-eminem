@@ -18,8 +18,9 @@
             @endif
 
             <div class="placeholders">
-                <div class="glyphicon glyphicon-camera"></div>
-                <div class="glyphicon glyphicon-plus"></div>
+                <div class="idle glyphicon glyphicon-camera"></div>
+                <div class="idle glyphicon glyphicon-plus"></div>
+                <div class="error glyphicon glyphicon-exclamation-sign"></div>
             </div>
 
         </div>

@@ -30,16 +30,17 @@ class EminemServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-        $this->package('clumsy/eminem', 'clumsy/eminem');
-        $this->app['config']->package('clumsy/eminem', $this->guessPackagePath() . '/config');
+        $path = __DIR__.'/../..';
+
+        $this->package('clumsy/eminem', 'clumsy/eminem', $path);
 
         $assets = include($this->guessPackagePath() . '/assets/assets.php');
 		Asset::batchRegister($assets);
 
-		require $this->guessPackagePath().'/helpers.php';
-		require $this->guessPackagePath().'/routes.php';
-		require $this->guessPackagePath().'/macros/form.php';
-		require $this->guessPackagePath().'/macros/html.php';
+		require $path.'/helpers.php';
+		require $path.'/routes.php';
+		require $path.'/macros/form.php';
+		require $path.'/macros/html.php';
 	}
 
 	/**

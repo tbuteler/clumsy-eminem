@@ -4,14 +4,18 @@ use Clumsy\Eminem\Models\Media;
 use Clumsy\Eminem\Models\MediaAssociation;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File as Filesystem;
+use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
 
 class MediaFile {
 
     protected $file = null;
-    
+    protected $errors = null;
+
+    public $original_filename = null;
     public $filename = null;
     public $mime_type = null;
     public $model = null;
@@ -36,20 +40,21 @@ class MediaFile {
         }
 
         $this->file = $file;
+        $this->original_filename = $this->filename;
     
         $this->checkMimeType();
     }
 
     protected function basePath()
     {
-        return Config::get('eminem::folder');
+        return Config::get('clumsy/eminem::folder');
     }
 
     protected function relativePath()
     {
         $base = $this->basePath();
         
-        $organize = Config::get('eminem::organize') ? date('Y') . '/' . date('m') : '';
+        $organize = Config::get('clumsy/eminem::organize') ? date('Y') . '/' . date('m') : '';
 
         return "$base/$organize";
     }
@@ -99,7 +104,28 @@ class MediaFile {
 
         $this->filename = Str::slug($name).$extension;
 
-        $this->file->move($this->folderPath(), $this->filename);
+        try
+        {
+            $this->file->move($this->folderPath(), $this->filename);
+        }
+        catch (FileException $e)
+        {
+            $this->errors = new MessageBag;
+            $error = $e->getMessage();
+
+            if (str_contains($error, 'upload_max_filesize'))
+            {
+                $this->errors->add('file', trans('clumsy/eminem::all.errors.upload_size', array('filename' => $this->original_filename)));
+            }
+            elseif (str_contains($error, 'Unable to create'))
+            {
+                $this->errors->add('file', trans('clumsy/eminem::all.errors.permissions', array('filename' => $this->original_filename)));
+            }
+            else
+            {
+                $this->errors->add('file', $error);
+            }
+        }
 
         return $this;
     }
@@ -151,5 +177,15 @@ class MediaFile {
         $this->association = $this->model->bind($options);
 
         return $this;
+    }
+
+    public function hasErrors()
+    {
+        return (bool)$this->errors;
+    }
+
+    public function getErrorMessage()
+    {
+        return $this->errors->first();
     }
 }

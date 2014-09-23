@@ -27,4 +27,13 @@ return array(
 
         'remove'  => 'Remover mídia',
     ),
+
+    'errors' => array(
+
+        'general' => 'Ocorreu um erro. Tente novamente mais tarde.',
+
+        'upload_size' => 'O tamanho do ficheiro ":filename" excede o máximo permitido pelo servidor.',
+
+        'permissions' => 'O ficheiro ":filename" não pode ser carregado por falta de permissões.',
+    ),
 );

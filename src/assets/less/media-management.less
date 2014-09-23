@@ -29,17 +29,29 @@
         z-index: 1;
         width: 100%;
 
-        .glyphicon-camera {
+        .error {
+            display: none;
+            color: #ff4500;
+        }
+
+        .glyphicon {
             position: relative;
+        }
+
+        .glyphicon-camera {
             top: 64px;
             margin-right: 8px;
             font-size: 45px;
         }
 
         .glyphicon-plus {
-            position: relative;
             top: 54px;
             font-size: 20px;
+        }
+
+        .glyphicon-exclamation-sign{
+            top: 70px;
+            font-size: 55px;
         }
     }
 
@@ -47,6 +59,20 @@
         
         .placeholders {
             display: block;
+        }
+    }
+
+    &.with-error {
+
+        .placeholders {
+
+            .idle {
+                display: none;
+            }
+
+            .error {
+                display: block;
+            }
         }
     }
 
