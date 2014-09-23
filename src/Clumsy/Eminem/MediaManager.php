@@ -37,7 +37,7 @@ class MediaManager {
         if (is_array($defined))
         {
             $defaults = array(
-                'association_type'  => $model,
+                'association_type'  => class_basename($model),
                 'association_id'    => $id,
             );
             
