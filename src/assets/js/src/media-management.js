@@ -145,7 +145,7 @@
                 this.$el.find('.placeholders').show();
             }
             else {
-                $box.removeClass('empty');
+                this.$el.removeClass('empty');
                 this.$el.find('.placeholders').hide();
             }
         },
