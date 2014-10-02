@@ -26,6 +26,7 @@
             $box.closest('.fileupload-group').find('input').fileupload({
                 dataType: 'json',
                 dropZone: $box.add($dropzone),
+                pasteZone: null,
                 formData: [
                     {
                         name: 'allow_multiple',

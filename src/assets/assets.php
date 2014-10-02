@@ -22,13 +22,13 @@ return array(
         'set'   => 'styles',
         'path'  => 'packages/clumsy/eminem/css/media-management.css',
         'req'   => 'bootstrap',
-        'v'     => '0.1',
+        'v'     => '4.2',
     ),
     
     'media-management.js' => array(
         'set'   => 'footer',
         'path'  => 'packages/clumsy/eminem/js/media-management.min.js',
         'req'   => 'bootstrap.js',
-        'v'     => '0.1',
+        'v'     => '4.2',
     ),
 );
