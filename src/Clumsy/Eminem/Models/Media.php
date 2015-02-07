@@ -1,6 +1,8 @@
 <?php namespace Clumsy\Eminem\Models;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
+use Clumsy\Eminem\Facade as MediaManager;
 
 class Media extends \Eloquent {
     
@@ -11,6 +13,28 @@ class Media extends \Eloquent {
     public function path()
     {
         return $this->path_type === 'absolute' ? $this->path : URL::to($this->path);
+    }
+
+    public function previewPath()
+    {
+        if ($this->hasPreview())
+        {
+            return $this->path();
+        }
+
+        $placeholders = Config::get('clumsy/eminem::placeholder-folder').'/';
+
+        if (file_exists(public_path().'/'.$placeholders.$this->extension.'.png'))
+        {
+            return URL::to($placeholders.$this->extension.'.png');
+        }
+
+        return URL::to($placeholders.'unknown.png');
+    }
+
+    public function hasPreview()
+    {
+        return in_array($this->mime_type, (array)Config::get('clumsy/eminem::preview-mime-types'));
     }
 
     public function bind($options = array())
@@ -51,5 +75,10 @@ class Media extends \Eloquent {
                 'position'               => $position,
             ));
         }
+    }
+
+    public function getExtensionAttribute()
+    {
+        return MediaManager::guessExtension($this->path);
     }
 }

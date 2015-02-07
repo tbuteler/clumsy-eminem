@@ -2,7 +2,6 @@
 
 use Illuminate\Support\ServiceProvider;
 use Clumsy\Assets\Facade as Asset;
-use Clumsy\Eminem\MediaManager;
 
 class EminemServiceProvider extends ServiceProvider {
 

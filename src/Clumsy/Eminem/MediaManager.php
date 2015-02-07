@@ -8,6 +8,13 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class MediaManager {
 
+    public function guessExtension($path)
+    {
+        preg_match('/\.\w{2,4}$/', $path, $extension);
+
+        return str_replace('.', '', head($extension));
+    }
+
     public function add($file, $filename = null)
     {
         return with(new MediaFile($file, $filename))->add();

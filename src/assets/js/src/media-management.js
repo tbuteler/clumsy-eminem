@@ -62,7 +62,7 @@
                             $box.addClass('with-error');
                             return true;
                         }
-                        $('<img/>').attr('src', file.src).appendTo($box);
+                        $('<img/>').attr('src', file.preview).data('src', file.src).appendTo($box);
                         $box.data('raw', $box.html());
                         $box.closest('form').append(file.input);
                         if (options.allowMultiple) {
@@ -133,7 +133,12 @@
         remove: function(src) {
 
             this._raw();
-            this.$el.find('img[src="'+src+'"]').first().remove();
+            this.$el.find('img').each(function(i,el){
+                if ($(el).data('src') === src) {
+                    $(el).remove();
+                    return false;
+                }
+            });
             this._store();
             this.checkEmpty();            
             this.update();
@@ -265,7 +270,7 @@ $(function() {
                 function(data) {
                     $item.fadeOut('fast', function(){
                         $item.remove();
-                        $box.mediaBox('remove', $img.attr('src'));
+                        $box.mediaBox('remove', $img.data('src'));
                         $box.mediaBox('updateModal');
                     });
                 }

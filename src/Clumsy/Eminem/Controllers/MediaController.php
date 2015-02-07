@@ -63,9 +63,11 @@ class MediaController extends \BaseController {
 				$input = Form::mediaBind($media->model->id, $position, $allow_multiple);
 	        }
 
-			$src = URL::to($media->model->path);
+			$src = $media->model->path();
 
-	        $results[] = compact('status', 'src', 'input', 'html');
+			$preview = $media->model->previewPath();
+
+	        $results[] = compact('status', 'src', 'preview', 'input', 'html');
 	    }
 
 	    return array(

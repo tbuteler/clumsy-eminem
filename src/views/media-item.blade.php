@@ -1,9 +1,9 @@
 <div class="media-item">
-    {{ HTML::image($media->path) }}
+    {{ HTML::image($media->previewPath(), null, array('data-src' => $media->path())) }}
 
     <div class="actions">
         <p>
-            <strong>{{ trans('clumsy/eminem::all.item.path') }}:</strong> {{ url($media->path) }}<br>
+            <strong>{{ trans('clumsy/eminem::all.item.path') }}:</strong> <a target="_blank" href="{{ $media->path() }}">{{ $media->path() }}</a><br>
             <strong>{{ trans('clumsy/eminem::all.item.mime') }}:</strong> {{ $media->mime_type }}
         </p>
     

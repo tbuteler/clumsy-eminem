@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File as Filesystem;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
 
@@ -67,7 +68,7 @@ class MediaFile {
     protected function checkMimeType()
     {
         /*
-        if (!in_array($this->mime_type, Config::get('media.allowed')))
+        if (!in_array($this->mime_type, Config::get('clumsy/eminem::media.allowed')))
         {
             return Response::make(array(
                 'message' => sprintf('You have tried to upload a file that is not currently supported. Please retry with any of the following types of media: %s', implode(', ', $allowed))
@@ -78,10 +79,9 @@ class MediaFile {
 
     protected function move($overwrite = false)
     {
-        preg_match('/\.\w{2,4}$/', $this->filename, $extension);
-        $extension = head($extension);
-        
-        $name = str_replace($extension, '', $this->filename);
+        $extension = \Clumsy\Eminem\Facade::guessExtension($this->filename);
+
+        $name = str_replace(".$extension", '', $this->filename);
 
         if (!$overwrite)
         {
@@ -97,12 +97,12 @@ class MediaFile {
                 {
                     $name .= "-$i";
                 }
-                $this->filename = $name.$extension;
+                $this->filename = $name.".$extension";
                 $i++;
             }
         }
 
-        $this->filename = Str::slug($name).$extension;
+        $this->filename = Str::slug($name).".$extension";
 
         try
         {
