@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 return array(
 
@@ -9,12 +9,12 @@ return array(
 
     'bootstrap' => array(
         'set'   => 'styles',
-        'path'  => '//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css',
+        'path'  => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css',
     ),
-	
+
     'bootstrap.js' => array(
         'set'   => 'footer',
-        'path'  => '//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js',
+        'path'  => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js',
         'req'   => 'jquery',
     ),
 
@@ -24,7 +24,7 @@ return array(
         'req'   => 'bootstrap',
         'v'     => '4.3',
     ),
-    
+
     'media-management.js' => array(
         'set'   => 'footer',
         'path'  => 'packages/clumsy/eminem/js/media-management.min.js',
