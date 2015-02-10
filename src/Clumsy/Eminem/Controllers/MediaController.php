@@ -2,11 +2,12 @@
 
 use Clumsy\Eminem\Models\Media;
 use Clumsy\Eminem\Models\MediaAssociation;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Form;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Form;
 use Illuminate\Support\Facades\View;
 use Clumsy\Eminem\Facade as MediaManager;
 
@@ -69,6 +70,8 @@ class MediaController extends \BaseController {
 
 	        $results[] = compact('status', 'src', 'preview', 'input', 'html');
 	    }
+
+	    Event::fire('eminem.uploaded', array($results));
 
 	    return array(
 	        'files' => $results

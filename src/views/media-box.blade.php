@@ -18,8 +18,7 @@
             @endif
 
             <div class="placeholders">
-                <div class="idle glyphicon glyphicon-camera"></div>
-                <div class="idle glyphicon glyphicon-plus"></div>
+                <div class="idle glyphicon glyphicon-cloud-upload"></div>
                 <div class="error glyphicon glyphicon-exclamation-sign"></div>
             </div>
 

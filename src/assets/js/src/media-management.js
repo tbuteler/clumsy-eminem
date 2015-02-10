@@ -73,6 +73,8 @@
                         }
                         $box.mediaBox('updateModal');
                     });
+
+                    $box.trigger("uploaded.mediaBox", [data]);
                 },
                 fail: function(e, data) {
                     if (typeof data.jqXHR.responseJSON !== 'undefined' && typeof data.jqXHR.responseJSON.message !== 'undefined') {
@@ -84,6 +86,8 @@
                     $box.addClass('with-error');
                     $box.mediaBox('checkEmpty');
                     $box.mediaBox('update');
+
+                    $box.trigger("failed.mediaBox", [data]);
                 },
                 stop: function(e, data) {
                     if (options.allowMultiple) {
