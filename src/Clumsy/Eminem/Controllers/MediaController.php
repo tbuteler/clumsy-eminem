@@ -1,7 +1,6 @@
 <?php namespace Clumsy\Eminem\Controllers;
 
-use Clumsy\Eminem\Models\Media;
-use Clumsy\Eminem\Models\MediaAssociation;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Form;
@@ -9,9 +8,11 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
+use Clumsy\Eminem\Models\Media;
+use Clumsy\Eminem\Models\MediaAssociation;
 use Clumsy\Eminem\Facade as MediaManager;
 
-class MediaController extends \BaseController {
+class MediaController extends Controller {
 
 	public function upload($object = null, $position = null)
 	{
