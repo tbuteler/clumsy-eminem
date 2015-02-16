@@ -9,6 +9,11 @@ trait MediableTrait {
     {
         parent::boot();
 
+        self::saving(function($model)
+        {
+            if (isset($model->files)) unset($model->files);
+        });
+
         self::creating(function($model)
         {
             if (isset($model->media_bind)) unset($model->media_bind);
