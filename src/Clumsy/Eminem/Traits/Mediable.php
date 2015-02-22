@@ -18,9 +18,9 @@ trait Mediable {
 
         self::created(function($model)
         {
-            if (Illuminate\Support\Facades\Input::has('media_bind'))
+            if (\Illuminate\Support\Facades\Input::has('media_bind'))
             {
-                foreach (Illuminate\Support\Facades\Input::get('media_bind') as $media_id => $attributes)
+                foreach (\Illuminate\Support\Facades\Input::get('media_bind') as $media_id => $attributes)
                 {
                     $media = \Clumsy\Eminem\Models\Media::find($media_id);
 
