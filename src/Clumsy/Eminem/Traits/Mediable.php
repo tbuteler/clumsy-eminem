@@ -1,8 +1,5 @@
 <?php namespace Clumsy\Eminem\Traits;
 
-use Clumsy\Eminem\Models\Media;
-use Illuminate\Support\Facades\Input;
-
 trait Mediable {
 
     public static function boot()
@@ -21,11 +18,11 @@ trait Mediable {
 
         self::created(function($model)
         {
-            if (Input::has('media_bind'))
+            if (Illuminate\Support\Facades\Input::has('media_bind'))
             {
-                foreach (Input::get('media_bind') as $media_id => $attributes)
+                foreach (Illuminate\Support\Facades\Input::get('media_bind') as $media_id => $attributes)
                 {
-                    $media = Media::find($media_id);
+                    $media = \Clumsy\Eminem\Models\Media::find($media_id);
 
                     if ($media)
                     {
@@ -46,7 +43,7 @@ trait Mediable {
 
     public function media()
     {
-        return $this->morphToMany('Media', 'media_association')->select(array('media.*', 'position'));
+        return $this->morphToMany('\Clumsy\Eminem\Models\Media', 'media_association')->select(array('media.*', 'position'));
     }
 
     public function mediaSlots()
