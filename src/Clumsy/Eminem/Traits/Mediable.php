@@ -1,9 +1,9 @@
-<?php namespace Clumsy\Eminem;
+<?php namespace Clumsy\Eminem\Traits;
 
 use Clumsy\Eminem\Models\Media;
 use Illuminate\Support\Facades\Input;
 
-trait MediableTrait {
+trait Mediable {
 
     public static function boot()
     {
