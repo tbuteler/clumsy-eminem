@@ -74,9 +74,14 @@ class MediaController extends Controller {
 
 	    Event::fire('eminem.uploaded', array($results));
 
-	    return array(
+		$response = Response::make(array(
 	        'files' => $results
-	    );
+	    ), 200);
+		
+		$response->header('Vary', 'Accept');
+		$response->header('Content-Type', (isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) ? 'application/json' : 'text/plain');
+
+	    return $response;
 	}
 
 	public function unbind($id)
