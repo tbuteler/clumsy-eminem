@@ -15,14 +15,18 @@ class MediaManager {
         return str_replace('.', '', head($extension));
     }
 
-    public function add($file, $filename = null)
+    public function add($file, $filename = null, $rules = null)
     {
-        return with(new MediaFile($file, $filename))->add();
+        return with(new MediaFile($file, $filename))
+                ->validate($rules)
+                ->add();
     }
 
-    public function addCopy($file, $filename = null)
+    public function addCopy($file, $filename = null, $rules = null)
     {
-        return with(new MediaFile($file, $filename))->addCopy();
+        return with(new MediaFile($file, $filename))
+                ->validate($rules)
+                ->addCopy();
     }
 
     public function slots($model, $id = null)

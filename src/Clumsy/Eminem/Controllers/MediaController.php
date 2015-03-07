@@ -28,6 +28,8 @@ class MediaController extends Controller {
 	    $files = Input::file('files');
 
 	    $allow_multiple = filter_var(Input::get('allow_multiple'), FILTER_VALIDATE_BOOLEAN);
+
+	    $rules = Input::get('rules');
 	    
 	    $results = array();
 
@@ -35,7 +37,7 @@ class MediaController extends Controller {
 	    {
 	        $input = '';
 
-	        $media = MediaManager::add($file);
+	        $media = MediaManager::add($file, null, $rules);
 
 	        if ($media->hasErrors())
 	        {

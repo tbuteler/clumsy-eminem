@@ -33,6 +33,10 @@
                         value: this.options.allowMultiple,
                     },
                     {
+                        name: 'rules',
+                        value: this.options.rules,
+                    },
+                    {
                         name: '_token',
                         value: $box.closest('form').find('input[name="_token"]').val()
                     }
@@ -62,7 +66,7 @@
                             $box.addClass('with-error');
                             return true;
                         }
-                        $('<img/>').attr('src', file.preview).data('src', file.src).appendTo($box);
+                        $('<img/>').attr('src', file.preview).attr('data-src', file.src).appendTo($box);
                         $box.data('raw', $box.html());
                         $box.closest('form').append(file.input);
                         if (options.allowMultiple) {
@@ -252,7 +256,8 @@ $(function() {
         
         $(handover.media.boxes).each(function(i, media){
             $('#'+media[0]).mediaBox({
-                allowMultiple: media[1]
+                allowMultiple: media[1],
+                rules: media[2]
             });
         });
 

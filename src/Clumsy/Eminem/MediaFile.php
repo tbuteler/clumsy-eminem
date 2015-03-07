@@ -42,8 +42,8 @@ class MediaFile {
 
         $this->file = $file;
         $this->original_filename = $this->filename;
-    
-        $this->checkMimeType();
+
+        $this->errors = new MessageBag;
     }
 
     protected function basePath()
@@ -110,7 +110,6 @@ class MediaFile {
         }
         catch (FileException $e)
         {
-            $this->errors = new MessageBag;
             $error = $e->getMessage();
 
             if (str_contains($error, 'upload_max_filesize'))
@@ -141,13 +140,85 @@ class MediaFile {
         return $this;
     }
 
+    protected function checkRule($rule)
+    {
+        $parameters = array();
+
+        if (strpos($rule, ':') !== false)
+        {
+            list($rule, $parameters) = explode(':', $rule, 2);
+        }
+
+        $rule = studly_case($rule);
+
+        $method = "validate{$rule}";
+
+        $this->$method($parameters);
+    }
+
+    public function validateMime($allowed_mimes)
+    {
+        $allowed_mimes = explode(',', $allowed_mimes);
+        
+        if (!in_array($this->mime_type, $allowed_mimes))
+        {
+            $this->errors->add('file', trans('clumsy/eminem::all.validate.mime_type', array('filename' => $this->original_filename, 'mimes' => implode(', ', $allowed_mimes))));
+        }
+    }
+
+    public function validateExtension($allowed_extensions)
+    {
+        $allowed_extensions = explode(',', $allowed_extensions);
+
+        if (!in_array($this->file->guessExtension(), $allowed_extensions))
+        {
+            $this->errors->add('file', trans('clumsy/eminem::all.validate.extension', array('filename' => $this->original_filename, 'extensions' => implode(', ', $allowed_extensions))));
+        }
+    }
+
+    public function validateMaxSize($max_size_in_kb)
+    {
+        $size_in_kb = $this->file->getSize() / 1024;
+        $max_size_in_mb = round($max_size_in_kb / 1024, 2);
+
+        if ($size_in_kb > $max_size_in_kb)
+        {
+            $this->errors->add('file', trans('clumsy/eminem::all.validate.max_size', array('filename' => $this->original_filename, 'size' => $max_size_in_mb)));
+        }
+    }
+
+    public function validate($rules = null)
+    {
+        $rules = (is_string($rules)) ? explode('|', $rules) : $rules;
+
+        if ($rules)
+        {
+            foreach ($rules as $rule)
+            {
+                $this->checkRule($rule);
+            }
+        }
+
+        return $this;
+    }
+
     public function add()
     {
+        if ($this->hasErrors())
+        {
+            return $this;
+        }
+
         return $this->move()->save();
     }
 
     public function addCopy()
     {
+        if ($this->hasErrors())
+        {
+            return $this;
+        }
+
         $base = $this->basePath();
 
         do
@@ -181,7 +252,7 @@ class MediaFile {
 
     public function hasErrors()
     {
-        return (bool)$this->errors;
+        return !$this->errors->isEmpty();
     }
 
     public function getErrorMessage()
