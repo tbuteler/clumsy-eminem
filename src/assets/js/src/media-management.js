@@ -33,8 +33,8 @@
                         value: this.options.allowMultiple,
                     },
                     {
-                        name: 'rules',
-                        value: this.options.rules,
+                        name: 'validate',
+                        value: this.options.validate,
                     },
                     {
                         name: '_token',
@@ -257,7 +257,7 @@ $(function() {
         $(handover.media.boxes).each(function(i, media){
             $('#'+media[0]).mediaBox({
                 allowMultiple: media[1],
-                rules: media[2]
+                validate: media[2]
             });
         });
 

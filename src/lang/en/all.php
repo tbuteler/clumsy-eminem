@@ -36,13 +36,4 @@ return array(
 
         'permissions' => 'File ":filename" cannot be uploaded due to lack of permissions.',
     ),
-
-    'validate' => array(
-
-        'mime_type'   => 'File ":filename" is not allowed. Please retry with any of the following types of media: :mimes',
-
-        'extension'   => 'File ":filename" is not allowed. Please retry with a file which has any of the following extensions: :extensions',
-
-        'max_size'    => 'File ":filename" exceeds the maximum size allowed of :sizeMB.',
-    ),
 );

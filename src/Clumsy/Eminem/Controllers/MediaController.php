@@ -25,19 +25,15 @@ class MediaController extends Controller {
 			$association_type = $association_id = null;
 		}
 
-	    $files = Input::file('files');
-
 	    $allow_multiple = filter_var(Input::get('allow_multiple'), FILTER_VALIDATE_BOOLEAN);
 
-	    $rules = Input::get('rules');
-	    
 	    $results = array();
 
-	    foreach ($files as $file)
+	    foreach (Input::file('files') as $file)
 	    {
 	        $input = '';
 
-	        $media = MediaManager::add($file, null, $rules);
+	        $media = MediaManager::add($file, null, Input::get('validate'));
 
 	        if ($media->hasErrors())
 	        {

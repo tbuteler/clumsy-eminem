@@ -27,7 +27,7 @@ Form::macro('media', function($options = array())
         'association_id'    => null,
         'position'          => null,
         'allow_multiple'    => false,
-        'rules'             => null,
+        'validate'          => null,
     );
 
     $options = array_merge($defaults, $options);
@@ -36,7 +36,7 @@ Form::macro('media', function($options = array())
 
     Asset::enqueue('media-management.css', 30);
     Asset::enqueue('media-management.js', 30);
-    Asset::json('media', array('boxes' => array(array($id, $allow_multiple, $rules))));
+    Asset::json('media', array('boxes' => array(array($id, $allow_multiple, $validate))));
     Asset::json('media', array(
         'unbind_url'    => URL::route('media.unbind'),
         'general_error' => trans('clumsy/eminem::all.errors.general')

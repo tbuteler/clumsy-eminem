@@ -8,13 +8,15 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File as Filesystem;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
 
 class MediaFile {
 
-    protected $file = null;
-    protected $errors = null;
+    protected $file;
+    protected $errors;
+    protected $validator;
 
     public $original_filename = null;
     public $filename = null;
@@ -63,18 +65,6 @@ class MediaFile {
     protected function folderPath()
     {        
         return public_path($this->relativePath());
-    }
-
-    protected function checkMimeType()
-    {
-        /*
-        if (!in_array($this->mime_type, Config::get('clumsy/eminem::media.allowed')))
-        {
-            return Response::make(array(
-                'message' => sprintf('You have tried to upload a file that is not currently supported. Please retry with any of the following types of media: %s', implode(', ', $allowed))
-            ), 415);
-        }
-        */
     }
 
     protected function move($overwrite = false)
@@ -140,62 +130,18 @@ class MediaFile {
         return $this;
     }
 
-    protected function checkRule($rule)
-    {
-        $parameters = array();
-
-        if (strpos($rule, ':') !== false)
-        {
-            list($rule, $parameters) = explode(':', $rule, 2);
-        }
-
-        $rule = studly_case($rule);
-
-        $method = "validate{$rule}";
-
-        $this->$method($parameters);
-    }
-
-    public function validateMime($allowed_mimes)
-    {
-        $allowed_mimes = explode(',', $allowed_mimes);
-        
-        if (!in_array($this->mime_type, $allowed_mimes))
-        {
-            $this->errors->add('file', trans('clumsy/eminem::all.validate.mime_type', array('filename' => $this->original_filename, 'mimes' => implode(', ', $allowed_mimes))));
-        }
-    }
-
-    public function validateExtension($allowed_extensions)
-    {
-        $allowed_extensions = explode(',', $allowed_extensions);
-
-        if (!in_array($this->file->guessExtension(), $allowed_extensions))
-        {
-            $this->errors->add('file', trans('clumsy/eminem::all.validate.extension', array('filename' => $this->original_filename, 'extensions' => implode(', ', $allowed_extensions))));
-        }
-    }
-
-    public function validateMaxSize($max_size_in_kb)
-    {
-        $size_in_kb = $this->file->getSize() / 1024;
-        $max_size_in_mb = round($max_size_in_kb / 1024, 2);
-
-        if ($size_in_kb > $max_size_in_kb)
-        {
-            $this->errors->add('file', trans('clumsy/eminem::all.validate.max_size', array('filename' => $this->original_filename, 'size' => $max_size_in_mb)));
-        }
-    }
-
     public function validate($rules = null)
     {
-        $rules = (is_string($rules)) ? explode('|', $rules) : $rules;
-
         if ($rules)
         {
-            foreach ($rules as $rule)
+            $validator = Validator::make(
+                array('file' => $this->file),
+                array('file' => $rules)
+            );
+
+            if ($validator->fails())
             {
-                $this->checkRule($rule);
+                $this->errors->merge($validator->messages());
             }
         }
 
