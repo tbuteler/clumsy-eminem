@@ -27,7 +27,7 @@ Form::macro('media', function($options = array())
         'association_id'    => null,
         'position'          => null,
         'allow_multiple'    => false,
-        'validate'          => null,
+        'validate'          => '',
     );
 
     $options = array_merge($defaults, $options);
