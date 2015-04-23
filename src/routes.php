@@ -27,5 +27,10 @@ Route::group(
             'as'   => 'media.unbind',
             'uses' => 'Clumsy\Eminem\Controllers\MediaController@unbind'
         ));
+
+        Route::post('media-save-meta/{id?}', array(
+            'as'   => 'media.save-meta',
+            'uses' => 'Clumsy\Eminem\Controllers\MediaController@meta'
+        ));
     }
 );

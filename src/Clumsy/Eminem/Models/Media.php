@@ -77,8 +77,19 @@ class Media extends \Eloquent {
         }
     }
 
+
+    public function getMetaAttribute($value)
+    {
+        return json_decode($value, true);
+    }
+
     public function getExtensionAttribute()
     {
         return MediaManager::guessExtension($this->path);
+    }
+
+    public function getAssociationMetaAttribute($value)
+    {
+        return json_decode($value, true);
     }
 }

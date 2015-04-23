@@ -16,9 +16,24 @@ class MediaController extends Controller {
 
 	public function upload($object = null, $position = null)
 	{
+		$meta = null;
 		if ($object)
 		{
 			list($association_id, $association_type) = explode('-', $object);
+
+			if ($position) {
+				
+				$model = new $association_type();
+				
+				$bufferMediaSlots = $model->mediaSlots();
+				
+				$index = array_search($position, array_fetch($bufferMediaSlots, 'position'));
+
+				if ($index !== false)
+				{
+					$meta = $bufferMediaSlots[$index]['meta'];					
+				}
+			}
 		}
 		else
 		{
@@ -56,7 +71,7 @@ class MediaController extends Controller {
 
 				$media->model->association_id = $media->association->id;
 
-		        $html = View::make('clumsy/eminem::media-item', array('media' => $media->model))->render();
+		        $html = View::make('clumsy/eminem::media-item', array('media' => $media->model,'meta' => $meta))->render();
 	        }
 	        else
 	        {
@@ -85,5 +100,27 @@ class MediaController extends Controller {
 	public function unbind($id)
 	{
 		return MediaAssociation::destroy($id);
+	}
+
+	public function meta($id)
+	{
+		$data = Input::except('_token');
+		$final = array();
+		foreach ($data as $key => $value) {
+			$newKey = substr($key,5); //remove meta_
+			$final[$newKey] = $value;
+		}
+		
+		$resource = MediaAssociation::find($id);
+
+		if($resource != null){
+			$resource->meta = json_encode($final);
+			$resource->save();
+
+			return array('status' => 'ok');
+		}
+		else{
+			return array('status' => 'not ok','msg' => trans('clumsy/eminem::all.errors.general'));
+		}
 	}
 }

@@ -21,11 +21,15 @@ return array(
 
     'item' => array(
 
+        'filename' => 'Filename',
+
         'path'    => 'Path',
 
         'mime'    => 'MIME type',
 
         'remove'  => 'Remove media',
+
+        'save'  => 'Save',
     ),
 
     'errors' => array(

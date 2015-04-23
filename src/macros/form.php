@@ -28,6 +28,7 @@ Form::macro('media', function($options = array())
         'position'          => null,
         'allow_multiple'    => false,
         'validate'          => '',
+        'meta'              => null,
     );
 
     $options = array_merge($defaults, $options);
@@ -39,6 +40,7 @@ Form::macro('media', function($options = array())
     Asset::json('media', array('boxes' => array(array($id, $allow_multiple, $validate))));
     Asset::json('media', array(
         'unbind_url'    => URL::route('media.unbind'),
+        'meta_url'      => URL::route('media.save-meta'),
         'general_error' => trans('clumsy/eminem::all.errors.general')
     ), $replace = true);
 
@@ -52,9 +54,10 @@ Form::macro('media', function($options = array())
 
     if ($association_id)
     {
-        $media = Media::select('media.*', 'media_associations.id as association_id')
-                      ->join('media_associations', 'media_associations.media_id', '=', 'media.id')
-                      ->where('media_association_id', $association_id);
+        $media = Media::select('media.*', 'media_associations.id as association_id',
+                                'media_associations.meta as association_meta')
+                        ->join('media_associations', 'media_associations.media_id', '=', 'media.id')
+                        ->where('media_association_id', $association_id);
                       
         if ($association_type)
         {
@@ -67,6 +70,7 @@ Form::macro('media', function($options = array())
         }
 
         $media = $media->get();
+
     }
     else
     {
@@ -95,9 +99,9 @@ Form::macro('media', function($options = array())
 
     $output .= View::make('clumsy/eminem::media-box', compact('id', 'label', 'media', 'allow_multiple', 'url'))->render();
 
-    Event::listen('Print footer scripts', function() use($id, $label, $media)
+    Event::listen('Print footer scripts', function() use($id, $label, $media, $meta)
     {
-        return HTML::mediaModal($id, $label, $media);
+        return HTML::mediaModal($id, $label, $media, $meta);
     });
 
     return $output;
