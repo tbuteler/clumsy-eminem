@@ -318,6 +318,7 @@ $(function() {
         $('form.meta input').keypress(function (e) {
             var key = e.which;
             if(key == 13){
+                e.preventDefault();
                 $('.media-save-meta').trigger('click');
             }
         });
