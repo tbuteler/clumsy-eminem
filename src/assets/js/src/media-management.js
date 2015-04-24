@@ -316,6 +316,7 @@ $(function() {
         });
 
         $('form.meta input').keypress(function (e) {
+            e.preventDefault();
             var key = e.which;
             if(key == 13){
                 $('.media-save-meta').trigger('click');
