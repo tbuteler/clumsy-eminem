@@ -43,7 +43,8 @@ trait Mediable {
 
     public function media()
     {
-        return $this->morphToMany('\Clumsy\Eminem\Models\Media', 'media_association')->select(array('media.*', 'position'));
+        return $this->morphToMany('\Clumsy\Eminem\Models\Media', 'media_association')
+                    ->withPivot('position', 'meta');
     }
 
     public function mediaSlots()
@@ -56,25 +57,27 @@ trait Mediable {
         return (bool)sizeof($this->media);
     }
     
+    public function getMediaByPosition($position = null, $offset = 0)
+    {
+        $media = $this->media;
+
+        if ($position)
+        {
+            $media = $media->filter(function($media) use ($position)
+                {
+                    return $media->pivot->position === $position;
+                })
+                ->values();
+        }
+
+        return $media->offsetExists($offset) ? $media->offsetGet($offset) : null;
+    }
+
     public function mediaPath($position = null, $offset = 0)
     {
         if ($this->hasMedia())
         {
-            if ($position)
-            {
-                $media = $this->media->filter(function($media) use ($position)
-                    {
-                        return $media->position === $position;
-                    })
-                    ->values();
-
-                $media = $media->offsetExists($offset) ? $media->offsetGet($offset) : null;
-
-            }
-            else
-            {    
-                $media = $this->media->offsetExists($offset) ? $this->media->offsetGet($offset) : null;
-            }
+            $media = $this->getMediaByPosition($position, $offset);
 
             if ($media)
             {
@@ -83,6 +86,19 @@ trait Mediable {
         }
 
         return $this->mediaPlaceholder($position);
+    }
+
+    public function mediaMeta($position = null, $offset = 0)
+    {
+        if ($this->hasMedia())
+        {
+            $media = $this->getMediaByPosition($position, $offset);
+
+            if ($media)
+            {
+                return $media->pivot->meta;
+            }
+        }
     }
 
     public function mediaPlaceholder($position = null)
