@@ -18,11 +18,11 @@
     	
     	<button type="button" class="media-unbind btn btn-danger" data-id="{{ $media->association_id }}">{{ trans('clumsy/eminem::all.item.remove') }}</button>
         @if($meta != null)
-        	<button type="button" class="media-save-meta btn btn-success" data-id="{{ $media->association_id }}">
+        	<button class="media-save-meta btn btn-success" data-id="{{ $media->association_id }}">
         		{{ trans('clumsy/eminem::all.item.save') }}
-                <i class="glyphicon glyphicon-pencil"></i>
-                <i class="glyphicon glyphicon glyphicon-refresh" style="display:none;"></i>
-                <i class="glyphicon glyphicon-ok-sign" style="display:none;"></i>
+                <i class="meta-save-active glyphicon glyphicon-pencil"></i>
+                <i class="meta-save-loading glyphicon glyphicon glyphicon-refresh" style="display:none;"></i>
+                <i class="meta-save-success glyphicon glyphicon-ok-sign" style="display:none;"></i>
         	</button>
             {{ Form::close() }}
         @endif
