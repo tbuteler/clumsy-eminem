@@ -1,14 +1,16 @@
 <div class="media-item">
     {{ HTML::image($media->previewPath(), null, array('data-src' => $media->path())) }}
     <div class="actions">
-    	{{ Form::open(array('url' => route('media.save-meta', $media->association_id), 'class' => 'meta')) }}
-    	@foreach ($meta as $value => $name)
-            <div class="form-group text">
-                <label for="{{ $value }}">{{ $name }}</label>
-                <input class="form-control" id="{{ $value }}" name="{{ $value }}" 
-                value="{{ $media->association_meta[$value] or '' }}" type="text">
-            </div>
-    	@endforeach
+    	@if($meta != null)
+            {{ Form::open(array('url' => route('media.save-meta', $media->association_id), 'class' => 'meta')) }}
+            @foreach ($meta as $value => $name)
+                <div class="form-group text">
+                    <label for="{{ $value }}">{{ $name }}</label>
+                    <input class="form-control" id="{{ $value }}" name="{{ $value }}" 
+                    value="{{ $media->association_meta[$value] or '' }}" type="text">
+                </div>
+            @endforeach
+        @endif
         <p>
             <strong>{{ trans('clumsy/eminem::all.item.path') }}:</strong> <a target="_blank" href="{{ $media->path() }}">{{ $media->path() }}</a><br>
             <strong>{{ trans('clumsy/eminem::all.item.mime') }}:</strong> {{ $media->mime_type }}
