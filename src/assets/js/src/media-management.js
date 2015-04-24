@@ -286,7 +286,7 @@ $(function() {
             );
         });
 
-        $('form.meta').on('submit',function(event){
+        $(document).on('submit', 'form.meta', function(event){
             event.preventDefault();
             
             var $el = $(this);
