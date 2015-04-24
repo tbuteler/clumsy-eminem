@@ -285,5 +285,43 @@ $(function() {
                 }
             );
         });
+
+        $(document).on('click', '.media-save-meta', function(){
+            var $el = $(this).attr('disabled','disabled');
+            $el.siblings('button').attr('disabled','disabled');
+
+            var $form = $(this).parents('form.meta');
+            var url = $form.attr('action');
+            var data = $form.serialize();
+            $el.find('i.glyphicon-pencil').hide();
+            $el.find('i.glyphicon-refresh').show();
+            $.post(url,data,function(data) {
+                    if (data.status == 'not ok') {
+                        alert(data.msg);
+                    }
+                    else{
+                        $el.find('i.glyphicon-refresh').fadeOut().promise().done(function(){
+                            $el.find('i.glyphicon-ok-sign').fadeIn('fast');
+                            $el.removeAttr('disabled');
+                            $el.siblings('button').removeAttr('disabled');
+                        });
+                        setTimeout(function(){
+                            $el.find('i').fadeOut('fast').promise().done(function(){
+                                $el.find('i.glyphicon-pencil').fadeIn('fast');
+                            });
+                        },1500);
+                    }
+                }
+            );
+        });
+
+        $('form.meta input').keypress(function (e) {
+            var key = e.which;
+            if(key == 13){
+                $('.media-save-meta').trigger('click');
+            }
+        });
     }
 });
+
+        
