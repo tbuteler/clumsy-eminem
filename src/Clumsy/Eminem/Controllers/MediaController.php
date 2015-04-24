@@ -104,23 +104,14 @@ class MediaController extends Controller {
 
 	public function meta($id)
 	{
-		$data = Input::except('_token');
-		$final = array();
-		foreach ($data as $key => $value) {
-			$newKey = substr($key,5); //remove meta_
-			$final[$newKey] = $value;
-		}
-		
 		$resource = MediaAssociation::find($id);
 
 		if($resource != null){
-			$resource->meta = json_encode($final);
+			$resource->meta = Input::except('_token');
 			$resource->save();
-
 			return array('status' => 'ok');
 		}
-		else{
-			return array('status' => 'not ok','msg' => trans('clumsy/eminem::all.errors.general'));
-		}
+
+		return array('status' => 'not ok','msg' => trans('clumsy/eminem::all.errors.general'));
 	}
 }

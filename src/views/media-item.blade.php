@@ -4,8 +4,8 @@
     	{{ Form::open(array('url' => route('media.save-meta', $media->association_id), 'class' => 'meta')) }}
     	@foreach ($meta as $value => $name)
             <div class="form-group text">
-                <label for="meta_{{ $value }}">{{ $name }}</label>
-                <input class="form-control" id="meta_{{ $value }}" name="meta_{{ $value }}" 
+                <label for="{{ $value }}">{{ $name }}</label>
+                <input class="form-control" id="{{ $value }}" name="{{ $value }}" 
                 value="{{ $media->association_meta[$value] or '' }}" type="text">
             </div>
     	@endforeach
