@@ -96,7 +96,7 @@ trait Mediable {
 
             if ($media)
             {
-                return $media->pivot->meta;
+                return json_decode($media->pivot->meta, true);
             }
         }
     }
