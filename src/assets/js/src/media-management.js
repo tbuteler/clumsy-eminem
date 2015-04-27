@@ -286,40 +286,42 @@ $(function() {
             );
         });
 
-        $(document).on('click', '.media-save-meta', function(){
-            var $el = $(this).attr('disabled','disabled');
-            $el.siblings('button').attr('disabled','disabled');
+        $(document).on('submit', 'form.meta', function(event){
+            event.preventDefault();
+            
+            var $el = $(this);
+            var $btn = $(this).find('.media-save-meta');
+            $el.prop('disabled', true).siblings('button').prop('disabled', true);
 
-            var $form = $(this).parents('form.meta');
-            var url = $form.attr('action');
-            var data = $form.serialize();
-            $el.find('i.glyphicon-pencil').hide();
-            $el.find('i.glyphicon-refresh').show();
+            var url = $el.attr('action');
+            var data = $el.serialize();
+
+            var $i_active = $el.find('.meta-save-active');
+            var $i_loading = $el.find('.meta-save-loading');
+            var $i_success = $el.find('.meta-save-success');
+
+            $i_active.hide();
+            $i_loading.show();
+
             $.post(url,data,function(data) {
                     if (data.status == 'not ok') {
                         alert(data.msg);
                     }
                     else{
-                        $el.find('i.glyphicon-refresh').fadeOut().promise().done(function(){
-                            $el.find('i.glyphicon-ok-sign').fadeIn('fast');
-                            $el.removeAttr('disabled');
-                            $el.siblings('button').removeAttr('disabled');
+                        $i_loading.fadeOut().promise().done(function(){
+                            $i_success.fadeIn('fast');
+                            $btn.prop('disabled',false);
+                            $btn.siblings('button').prop('disabled',false);
                         });
                         setTimeout(function(){
-                            $el.find('i').fadeOut('fast').promise().done(function(){
-                                $el.find('i.glyphicon-pencil').fadeIn('fast');
+                            $i_success.fadeOut('fast').promise().done(function(){
+                                $i_active.fadeIn('fast');
                             });
                         },1500);
                     }
                 }
             );
-        });
 
-        $('form.meta input').keypress(function (e) {
-            var key = e.which;
-            if(key == 13){
-                $('.media-save-meta').trigger('click');
-            }
         });
     }
 });
