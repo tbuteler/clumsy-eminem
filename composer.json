@@ -24,11 +24,7 @@
     },
     "extra": {
         "branch-alias": {
-<<<<<<< HEAD
-            "dev-master": "0.6.4-dev"
-=======
-            "dev-master": "0.6.3-dev"
->>>>>>> 2dca0892f114703833de179346d6e3e6f31c7bfb
+            "dev-master": "0.6.5-dev"
         }
     },
     "minimum-stability": "dev",
