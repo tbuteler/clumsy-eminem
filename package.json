@@ -1,7 +1,11 @@
 {
   "name": "ClumsyEminem",
   "description": "Media manager for Laravel",
+<<<<<<< HEAD
   "version": "0.6.4",
+=======
+  "version": "0.6.3",
+>>>>>>> 2dca0892f114703833de179346d6e3e6f31c7bfb
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-contrib-jshint": "*",

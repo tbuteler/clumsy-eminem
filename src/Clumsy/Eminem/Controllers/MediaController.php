@@ -29,7 +29,7 @@ class MediaController extends Controller {
 				
 				$index = array_search($position, array_fetch($bufferMediaSlots, 'position'));
 
-				if ($index !== false)
+				if ($index !== false && isset($bufferMediaSlots[$index]['meta']))
 				{
 					$meta = $bufferMediaSlots[$index]['meta'];					
 				}
