@@ -71,7 +71,8 @@ class MediaFile {
     {
         $extension = \Clumsy\Eminem\Facade::guessExtension($this->filename);
 
-        $name = str_replace(".$extension", '', $this->filename);
+        $name = Str::slug(str_replace(".$extension", '', $this->filename));
+        $this->filename = $name.".$extension";
 
         if (!$overwrite)
         {
@@ -91,8 +92,6 @@ class MediaFile {
                 $i++;
             }
         }
-
-        $this->filename = Str::slug($name).".$extension";
 
         try
         {
