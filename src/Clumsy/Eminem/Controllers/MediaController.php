@@ -26,12 +26,21 @@ class MediaController extends Controller {
 				$model = new $association_type();
 				
 				$bufferMediaSlots = $model->mediaSlots();
-				
-				$index = array_search($position, array_fetch($bufferMediaSlots, 'position'));
 
-				if ($index !== false && isset($bufferMediaSlots[$index]['meta']))
+				$index = 0;
+
+				if (!isset($bufferMediaSlots['position']))
 				{
-					$meta = $bufferMediaSlots[$index]['meta'];					
+					$index = array_search($position, array_fetch($bufferMediaSlots, 'position'));
+					if ($index !== false)
+					{
+						$bufferMediaSlots = $bufferMediaSlots[$index];
+					}
+				}
+
+				if (isset($bufferMediaSlots['meta']))
+				{
+					$meta = $bufferMediaSlots['meta'];
 				}
 			}
 		}
