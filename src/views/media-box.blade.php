@@ -11,7 +11,7 @@
 
                 @foreach ($media as $m)
 
-                    {{ HTML::image($m->previewPath(), $id, array('data-src' => $m->path())) }}
+                    {{ HTML::mediaImage($m) }}
 
                 @endforeach
 

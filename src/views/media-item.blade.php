@@ -1,5 +1,5 @@
 <div class="media-item">
-    {{ HTML::image($media->previewPath(), null, array('data-src' => $media->path())) }}
+    {{ HTML::mediaImage($media) }}
     <div class="actions">
     	@if($meta != null)
             {{ Form::open(array('url' => route('media.save-meta', $media->association_id), 'class' => 'meta')) }}

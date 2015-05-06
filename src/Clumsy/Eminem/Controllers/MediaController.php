@@ -80,18 +80,20 @@ class MediaController extends Controller {
 
 				$media->model->association_id = $media->association->id;
 
-		        $html = View::make('clumsy/eminem::media-item', array('media' => $media->model,'meta' => $meta))->render();
+		        $html = View::make('clumsy/eminem::media-item', array('media' => $media->model, 'meta' => $meta))->render();
 	        }
 	        else
 	        {
 				$input = Form::mediaBind($media->model->id, $position, $allow_multiple);
 	        }
 
+	        $media_id = $media->model->id;
+
 			$src = $media->model->path();
 
 			$preview = $media->model->previewPath();
 
-	        $results[] = compact('status', 'src', 'preview', 'input', 'html');
+	        $results[] = compact('media_id', 'status', 'src', 'preview', 'input', 'html');
 	    }
 
 	    Event::fire('eminem.uploaded', array($results));

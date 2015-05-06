@@ -66,7 +66,11 @@
                             $box.addClass('with-error');
                             return true;
                         }
-                        $('<img/>').attr('src', file.preview).attr('data-src', file.src).appendTo($box);
+                        $('<img/>')
+                            .attr('src', file.preview)
+                            .attr('data-src', file.src)
+                            .attr('data-media-id', file.media_id)
+                            .appendTo($box);
                         $box.data('raw', $box.html());
                         $box.closest('form').append(file.input);
                         if (options.allowMultiple) {
@@ -140,9 +144,14 @@
 
         remove: function(src) {
 
+            var $box = this.$el;
+
             this._raw();
             this.$el.find('img').each(function(i,el){
                 if ($(el).data('src') === src) {
+                    $box.trigger("removed.mediaBox", [{
+                        media_id: $(el).attr('data-media-id')
+                    }]);
                     $(el).remove();
                     return false;
                 }
