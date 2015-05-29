@@ -69,6 +69,8 @@ class MediaController extends Controller {
 
 	        $status = 'success';
 
+	        $html_data = array();
+
 	        if ((int)$association_id !== 0)
 	        {
 				$media->bind(array(
@@ -79,8 +81,8 @@ class MediaController extends Controller {
 				));
 
 				$media->model->association_id = $media->association->id;
-
-		        $html = View::make('clumsy/eminem::media-item', array('media' => $media->model, 'meta' => $meta))->render();
+				
+				$html_data['meta'] = $meta;
 	        }
 	        else
 	        {
@@ -88,6 +90,10 @@ class MediaController extends Controller {
 	        }
 
 	        $media_id = $media->model->id;
+
+			$html_data['media'] = $media->model;
+
+	        $html = View::make('clumsy/eminem::media-item', $html_data)->render();
 
 			$src = $media->model->path();
 

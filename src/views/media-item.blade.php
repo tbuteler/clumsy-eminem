@@ -1,7 +1,7 @@
 <div class="media-item">
     {{ HTML::mediaImage($media) }}
     <div class="actions">
-    	@if($meta != null)
+    	@if(isset($meta) && $meta != null)
             {{ Form::open(array('url' => route('media.save-meta', $media->association_id), 'class' => 'meta')) }}
             @foreach ($meta as $value => $name)
                 <div class="form-group text">
@@ -17,7 +17,7 @@
         </p>
     	
     	<button type="button" class="media-unbind btn btn-danger" data-id="{{ $media->association_id }}">{{ trans('clumsy/eminem::all.item.remove') }}</button>
-        @if($meta != null)
+        @if(isset($meta) && $meta != null)
         	<button class="media-save-meta btn btn-success" data-id="{{ $media->association_id }}">
         		{{ trans('clumsy/eminem::all.item.save') }}
                 <i class="meta-save-active glyphicon glyphicon-pencil"></i>
