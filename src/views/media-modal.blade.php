@@ -20,13 +20,15 @@
                             {{ trans('clumsy/eminem::all.modal.upload') }}
                         </a>
                     </li>
-                    {{--
+                    <?php
+                    /*
                     <li>
                         <a class="library-a" href="#{{ $id }}-library" role="tab" data-toggle="pill">
                             {{ trans('clumsy/eminem::all.modal.library') }}
                         </a>
                     </li>
-                    --}}
+                    */
+                    ?>
                 </ul>
 
                 <div class="tab-content">
@@ -54,9 +56,11 @@
 
                     </div>
                     
-                    {{--
+                    <?php
+                    /*
                     <div class="tab-pane fade" id="{{ $id }}-library"></div>
-                    --}}
+                    */
+                    ?>
                 
                 </div>
             </div>

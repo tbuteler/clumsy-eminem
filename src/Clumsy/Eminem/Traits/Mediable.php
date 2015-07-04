@@ -2,21 +2,15 @@
 
 trait Mediable {
 
-    public static function boot()
+    public static function bootMediable()
     {
-        parent::boot();
-
         self::saving(function($model)
         {
             if (isset($model->files)) unset($model->files);
-        });
-
-        self::creating(function($model)
-        {
             if (isset($model->media_bind)) unset($model->media_bind);
         });
 
-        self::created(function($model)
+        self::saved(function($model)
         {
             if (\Illuminate\Support\Facades\Input::has('media_bind'))
             {

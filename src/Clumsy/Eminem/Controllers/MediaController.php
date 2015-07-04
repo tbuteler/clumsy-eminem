@@ -14,40 +14,11 @@ use Clumsy\Eminem\Facade as MediaManager;
 
 class MediaController extends Controller {
 
-	public function upload($object = null, $position = null)
+	public function upload($position = null)
 	{
 		$meta = null;
-		if ($object)
-		{
-			list($association_id, $association_type) = explode('-', $object);
-
-			if ($position) {
-				
-				$model = new $association_type();
-				
-				$bufferMediaSlots = $model->mediaSlots();
-
-				$index = 0;
-
-				if (!isset($bufferMediaSlots['position']))
-				{
-					$index = array_search($position, array_fetch($bufferMediaSlots, 'position'));
-					if ($index !== false)
-					{
-						$bufferMediaSlots = $bufferMediaSlots[$index];
-					}
-				}
-
-				if (isset($bufferMediaSlots['meta']))
-				{
-					$meta = $bufferMediaSlots['meta'];
-				}
-			}
-		}
-		else
-		{
-			$association_type = $association_id = null;
-		}
+		$association_type = null;
+		$association_id = null;
 
 	    $allow_multiple = filter_var(Input::get('allow_multiple'), FILTER_VALIDATE_BOOLEAN);
 
@@ -69,37 +40,17 @@ class MediaController extends Controller {
 
 	        $status = 'success';
 
-	        $html_data = array();
-
-	        if ((int)$association_id !== 0)
-	        {
-				$media->bind(array(
-		            'association_id'   => $association_id,
-		            'association_type' => $association_type,
-		            'position'         => $position,
-		            'allow_multiple'   => $allow_multiple,
-				));
-
-				$media->model->association_id = $media->association->id;
-				
-				$html_data['meta'] = $meta;
-	        }
-	        else
-	        {
-				$input = Form::mediaBind($media->model->id, $position, $allow_multiple);
-	        }
-
 	        $media_id = $media->model->id;
-
-			$html_data['media'] = $media->model;
-
-	        $html = View::make('clumsy/eminem::media-item', $html_data)->render();
-
 			$src = $media->model->path();
-
 			$preview = $media->model->previewPath();
 
-	        $results[] = compact('media_id', 'status', 'src', 'preview', 'input', 'html');
+			$input = Form::mediaBind($media_id, $position, $allow_multiple);
+
+	        $html_data = array();
+			$html_data['media'] = $media->model;
+	        $html = View::make('clumsy/eminem::media-item', $html_data)->render();
+
+	        $results[] = compact('media_id', 'src', 'preview', 'status', 'input', 'html');
 	    }
 
 	    Event::fire('eminem.uploaded', array($results));

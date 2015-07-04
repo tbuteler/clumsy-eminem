@@ -23,13 +23,13 @@ return array(
 
         'filename' => 'Filename',
 
-        'path'    => 'Path',
+        'path'     => 'Path',
 
-        'mime'    => 'MIME type',
+        'mime'     => 'MIME type',
 
-        'remove'  => 'Remove media',
+        'remove'   => 'Remove media',
 
-        'save'  => 'Save',
+        'save'     => 'Save',
     ),
 
     'errors' => array(
@@ -39,5 +39,16 @@ return array(
         'upload_size' => 'File ":filename" exceeds maximum upload size permitted by server.',
 
         'permissions' => 'File ":filename" cannot be uploaded due to lack of permissions.',
+    ),
+
+    'comments' => array(
+
+        'allow_multiple' => 'Allows multiple attachments',
+
+        'mimes'          => 'Must be a file of type: :values',
+
+        'min'            => 'Must be at least :min kilobytes',
+
+        'max'            => 'May not be greater than :max kilobytes',
     ),
 );

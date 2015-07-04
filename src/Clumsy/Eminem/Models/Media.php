@@ -10,6 +10,17 @@ class Media extends \Eloquent {
     
     protected $guarded = array('id');
 
+    public function scopeAssociatedTo($query, $association_id)
+    {
+        return $query->select(
+            'media.*',
+            'media_associations.id as association_id',
+            'media_associations.meta as association_meta'
+        )
+        ->join('media_associations', 'media_associations.media_id', '=', 'media.id')
+        ->where('media_association_id', $association_id);
+    }
+
     public function path()
     {
         return $this->path_type === 'absolute' ? $this->path : URL::to($this->path);

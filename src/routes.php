@@ -18,7 +18,7 @@ Route::group(
     ),
     function()
     {
-        Route::match(array('POST', 'PUT'), 'media-upload/{object?}/{position?}', array(
+        Route::match(array('POST', 'PUT'), 'media-upload/{position?}', array(
             'as'   => 'media.upload',
             'uses' => 'Clumsy\Eminem\Controllers\MediaController@upload'
         ));

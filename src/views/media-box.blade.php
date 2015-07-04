@@ -1,6 +1,9 @@
 <div class="form-group fileupload-group">
     {{ Form::label($id, $label) }}
-    <div id="{{ $id }}" class="fileupload {{ $media && !$media->isEmpty() ? '' : 'empty' }}">
+    @if (count($comments))
+        <a tabindex="0" role="button" data-toggle="popover" data-container="body" data-trigger="focus" title="{{ $label }}" data-html="true" data-content="{{ $comments }}" class="fileupload-comments glyphicon glyphicon-info-sign"></a>
+    @endif
+    <div id="{{ $id }}" class="fileupload thumbnail {{ $media && !$media->isEmpty() ? '' : 'empty' }}">
         <div class="fileupload-wrapper">
 
             <div class="progress progress-striped active">
@@ -8,13 +11,9 @@
             </div>
 
             @if ($media)
-
                 @foreach ($media as $m)
-
                     {{ HTML::mediaImage($m) }}
-
                 @endforeach
-
             @endif
 
             <div class="placeholders">
@@ -23,8 +22,9 @@
             </div>
 
         </div>
+
     </div>
     
-    <input id="{{ $id }}-input" type="file" name="files[]" data-url="{{ $url }}" {{ $allow_multiple ? 'multiple' : ''}}>
+    <input id="{{ $id }}-input" type="file" name="files[]" data-url="{{ $url }}" {{ $options['allow_multiple'] ? 'multiple' : ''}}>
 
 </div>

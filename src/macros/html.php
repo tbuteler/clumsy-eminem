@@ -13,7 +13,7 @@ HTML::macro('mediaModal', function($id, $label, $media, $meta)
 HTML::macro('mediaImage', function($media)
 {	
     return HTML::image($media->previewPath(), null, array(
-    	'data-src'            => $media->path(),
-    	'data-media-id'       => $media->id,
+        'data-src'      => $media->path(),
+        'data-media-id' => $media->id,
     ));
 });

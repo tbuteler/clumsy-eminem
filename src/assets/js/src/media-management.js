@@ -281,18 +281,27 @@ $(function() {
                 $box = $('#'+slug),
                 $img = $item.find('img');
 
-            $.post(handover.media.unbind_url+'/'+$(this).data('id'),
-                {
-                    _token: $box.closest('form').find('input[name="_token"]').val()
-                },
-                function(data) {
-                    $item.fadeOut('fast', function(){
-                        $item.remove();
-                        $box.mediaBox('remove', $img.data('src'));
-                        $box.mediaBox('updateModal');
-                    });
-                }
-            );
+            if ($(this).data('id') !== '') {
+                $.post(handover.media.unbind_url+'/'+$(this).data('id'),
+                    {
+                        _token: $box.closest('form').find('input[name="_token"]').val()
+                    },
+                    function(data) {
+                        $item.fadeOut('fast', function(){
+                            $item.remove();
+                            $box.mediaBox('remove', $img.data('src'));
+                            $box.mediaBox('updateModal');
+                        });
+                    }
+                );
+            }
+            else {
+                $item.fadeOut('fast', function(){
+                    $item.remove();
+                    $box.mediaBox('remove', $img.data('src'));
+                    $box.mediaBox('updateModal');
+                });
+            }
         });
 
         $(document).on('submit', 'form.meta', function(event){
@@ -330,9 +339,8 @@ $(function() {
                     }
                 }
             );
-
         });
+
+        $('.fileupload-group [data-toggle="popover"]').popover();
     }
 });
-
-        

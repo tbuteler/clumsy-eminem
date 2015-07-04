@@ -9,12 +9,12 @@ return array(
 
     'bootstrap' => array(
         'set'   => 'styles',
-        'path'  => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css',
+        'path'  => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css',
     ),
 
     'bootstrap.js' => array(
         'set'   => 'footer',
-        'path'  => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js',
+        'path'  => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js',
         'req'   => 'jquery',
     ),
 
@@ -22,13 +22,13 @@ return array(
         'set'   => 'styles',
         'path'  => 'packages/clumsy/eminem/css/media-management.css',
         'req'   => 'bootstrap',
-        'v'     => '4.3',
+        'v'     => '0.7.0',
     ),
 
     'media-management.js' => array(
         'set'   => 'footer',
         'path'  => 'packages/clumsy/eminem/js/media-management.min.js',
         'req'   => 'bootstrap.js',
-        'v'     => '4.3',
+        'v'     => '0.7.0',
     ),
 );

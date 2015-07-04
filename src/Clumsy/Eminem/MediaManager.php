@@ -52,7 +52,7 @@ class MediaManager {
                 'association_id'    => $id,
             );
             
-            if (!is_associative($defined))
+            if (!array_is_associative($defined))
             {
                 foreach ($defined as $slot)
                 {
@@ -74,5 +74,71 @@ class MediaManager {
         }
 
         return $slots;
+    }
+
+    public function mediaSlotComments($options = array())
+    {
+        $output = array();
+
+        $defaults = array(
+            'allow_multiple'    => false,
+            'validate'          => '',
+            'show_comments'     => true,
+            'comments'          => '',
+        );
+
+        $options = array_merge($defaults, $options);
+        extract($options, EXTR_SKIP);
+
+        $show_all = $show_comments && !is_array($show_comments);
+
+        if (!$show_comments)
+        {
+            return $output;
+        }
+
+        if ($comments)
+        {
+            $output = (array)$comments;
+        }
+
+        if ($validate)
+        {
+            $rules = explode('|', $validate);
+            foreach ($rules as $rule)
+            {
+                if (str_contains($rule, 'image') && ($show_all || isset($show_comments['mimes'])))
+                {
+                    $types = array('jpeg', 'png', 'gif', 'bmp');
+                    $output[] = trans('clumsy/eminem::all.comments.mimes', array('values' => '<strong>'.implode(', ', $types).'</strong>'));
+                }
+
+                if (str_contains($rule, 'mimes') && ($show_all || isset($show_comments['mimes'])))
+                {
+                    list($rule, $types) = explode(':', $rule);
+                    $types = explode(',', $types);
+                    $output[] = trans('clumsy/eminem::all.comments.mimes', array('values' => '<strong>'.implode(', ', $types).'</strong>'));
+                }
+
+                if (str_contains($rule, 'min') && ($show_all || isset($show_comments['min'])))
+                {
+                    list($rule, $min) = explode(':', $rule);
+                    $output[] = trans('clumsy/eminem::all.comments.min', array('min' => '<strong>'.$min.'</strong>'));
+                }
+
+                if (str_contains($rule, 'max') && ($show_all || isset($show_comments['max'])))
+                {
+                    list($rule, $max) = explode(':', $rule);
+                    $output[] = trans('clumsy/eminem::all.comments.max', array('max' => '<strong>'.$max.'</strong>'));
+                }
+            }
+        }
+
+        if ($allow_multiple && ($show_all || isset($show_comments['allow_multiple'])))
+        {
+            $output[] = trans('clumsy/eminem::all.comments.allow_multiple');
+        }
+
+        return $output;
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Event;
 use Clumsy\Eminem\Models\Media;
 use Clumsy\Assets\Facade as Asset;
+use Clumsy\Eminem\Facade as MediaManager;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,7 @@ use Clumsy\Assets\Facade as Asset;
 |
 |
 */
+
 Form::macro('media', function($options = array())
 {
     $defaults = array(
@@ -29,10 +31,11 @@ Form::macro('media', function($options = array())
         'allow_multiple'    => false,
         'validate'          => '',
         'meta'              => null,
+        'show_comments'     => true,
+        'comments'          => '',
     );
 
     $options = array_merge($defaults, $options);
-
     extract($options, EXTR_SKIP);
 
     Asset::enqueue('media-management.css', 30);
@@ -45,7 +48,6 @@ Form::macro('media', function($options = array())
     ), $replace = true);
 
     $url = URL::route('media.upload', array(
-        'object'   => (int)$association_id . '-' . $association_type,
         'position' => $position,
     ));
 
@@ -54,10 +56,7 @@ Form::macro('media', function($options = array())
 
     if ($association_id)
     {
-        $media = Media::select('media.*', 'media_associations.id as association_id',
-                                'media_associations.meta as association_meta')
-                        ->join('media_associations', 'media_associations.media_id', '=', 'media.id')
-                        ->where('media_association_id', $association_id);
+        $media = Media::associatedTo($association_id);
                       
         if ($association_type)
         {
@@ -97,7 +96,13 @@ Form::macro('media', function($options = array())
         }
     }
 
-    $output .= View::make('clumsy/eminem::media-box', compact('id', 'label', 'media', 'allow_multiple', 'url'))->render();
+    $comments = MediaManager::mediaSlotComments($options);
+    if (sizeof($comments))
+    {
+        $comments = '<ul><li><small>'.implode('</small></li><li><small>', $comments).'</small></li></ul>';
+    }
+
+    $output .= View::make('clumsy/eminem::media-box', compact('id', 'label', 'media', 'options', 'comments', 'url'))->render();
 
     Event::listen('Print footer scripts', function() use($id, $label, $media, $meta)
     {
@@ -116,10 +121,11 @@ Form::macro('media', function($options = array())
 |
 |
 */
+
 Form::macro('mediaBind', function($media_id, $position = null, $allow_multiple = false)
 {
-    $output = Form::hidden('media_bind[' . $media_id . '][position]', $position);
-    $output .= Form::hidden('media_bind[' . $media_id . '][allow_multiple]', $allow_multiple);
+    $output = Form::hidden("media_bind[{$media_id}][position]", $position);
+    $output .= Form::hidden("media_bind[{$media_id}][allow_multiple]", $allow_multiple);
 
     return $output;
 });

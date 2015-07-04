@@ -40,4 +40,15 @@ return array(
 
         'permissions' => 'O ficheiro ":filename" não pode ser carregado por falta de permissões.',
     ),
+
+    'comments' => array(
+
+        'allow_multiple' => 'Permite múltiplos anexos',
+
+        'mimes'          => 'Permite ficheiros do tipo: :values',
+
+        'min'            => 'Tamanho mínimo: :min kilobytes',
+
+        'max'            => 'Tamanho máximo: :max kilobytes',
+    ),
 );
