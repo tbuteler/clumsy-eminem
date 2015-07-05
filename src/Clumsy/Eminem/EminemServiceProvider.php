@@ -19,6 +19,8 @@ class EminemServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+        $this->app->register('Intervention\Image\ImageServiceProvider');
+
         $this->app['eminem'] = new MediaManager;
 	}
 

@@ -29,12 +29,8 @@
                 pasteZone: null,
                 formData: [
                     {
-                        name: 'allow_multiple',
-                        value: this.options.allowMultiple,
-                    },
-                    {
-                        name: 'validate',
-                        value: this.options.validate,
+                        name: 'association',
+                        value: this.options.association,
                     },
                     {
                         name: '_token',
@@ -89,7 +85,7 @@
                         alert(data.jqXHR.responseJSON.message);
                     }
                     else {
-                        alert(handover.media.general_error);
+                        alert(handover.eminem.general_error);
                     }
                     $box.addClass('with-error');
                     $box.mediaBox('checkEmpty');
@@ -261,12 +257,12 @@
 
 $(function() {
 
-    if (typeof handover !== 'undefined' && typeof handover.media !== 'undefined') {
+    if (typeof handover !== 'undefined' && typeof handover.eminem !== 'undefined') {
         
-        $(handover.media.boxes).each(function(i, media){
+        $(handover.eminem.boxes).each(function(i, media){
             $('#'+media[0]).mediaBox({
                 allowMultiple: media[1],
-                validate: media[2]
+                association: media[2]
             });
         });
 
@@ -279,29 +275,18 @@ $(function() {
                 $current = $item.closest('.current-media'),
                 slug = $current.closest('.tab-pane').attr('id').replace('-current', ''),
                 $box = $('#'+slug),
-                $img = $item.find('img');
+                $img = $item.find('img'),
+                bind_id = $(this).data('id');
 
-            if ($(this).data('id') !== '') {
-                $.post(handover.media.unbind_url+'/'+$(this).data('id'),
-                    {
-                        _token: $box.closest('form').find('input[name="_token"]').val()
-                    },
-                    function(data) {
-                        $item.fadeOut('fast', function(){
-                            $item.remove();
-                            $box.mediaBox('remove', $img.data('src'));
-                            $box.mediaBox('updateModal');
-                        });
-                    }
-                );
-            }
-            else {
-                $item.fadeOut('fast', function(){
-                    $item.remove();
-                    $box.mediaBox('remove', $img.data('src'));
-                    $box.mediaBox('updateModal');
-                });
-            }
+            $item.fadeOut('fast', function(){
+                $item.remove();
+                $box.mediaBox('remove', $img.data('src'));
+                $box.mediaBox('updateModal');
+                if (bind_id !== '') {
+                    var unbind = '<input type="hidden" name="media_unbind[]" value="'+bind_id+'" />';
+                    $box.closest('form').append(unbind);
+                }
+            });
         });
 
         $(document).on('submit', 'form.meta', function(event){
@@ -322,10 +307,10 @@ $(function() {
             $i_loading.show();
 
             $.post(url,data,function(data) {
-                    if (data.status == 'not ok') {
-                        alert(data.msg);
+                    if (data.status == 'error') {
+                        alert(data.message);
                     }
-                    else{
+                    else {
                         $i_loading.fadeOut().promise().done(function(){
                             $i_success.fadeIn('fast');
                             $btn.prop('disabled',false);
@@ -335,7 +320,7 @@ $(function() {
                             $i_success.fadeOut('fast').promise().done(function(){
                                 $i_active.fadeIn('fast');
                             });
-                        },1500);
+                        }, 1500);
                     }
                 }
             );

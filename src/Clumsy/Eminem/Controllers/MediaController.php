@@ -1,7 +1,7 @@
 <?php namespace Clumsy\Eminem\Controllers;
 
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Form;
 use Illuminate\Support\Facades\Input;
@@ -11,16 +11,21 @@ use Illuminate\Support\Facades\View;
 use Clumsy\Eminem\Models\Media;
 use Clumsy\Eminem\Models\MediaAssociation;
 use Clumsy\Eminem\Facade as MediaManager;
+use Clumsy\Eminem\Exceptions\IllegalMediaSlotException;
 
 class MediaController extends Controller {
 
-	public function upload($position = null)
+	public function upload()
 	{
-		$meta = null;
-		$association_type = null;
-		$association_id = null;
+		$association = Crypt::decrypt(Input::get('association'));
+		list($model, $position) = explode('|', $association);
 
-	    $allow_multiple = filter_var(Input::get('allow_multiple'), FILTER_VALIDATE_BOOLEAN);
+		if (!$slot = MediaManager::getSlot($model, $position))
+		{
+			throw new IllegalMediaSlotException;
+		}
+
+    	extract($slot, EXTR_SKIP);
 
 	    $results = array();
 
@@ -28,7 +33,7 @@ class MediaController extends Controller {
 	    {
 	        $input = '';
 
-	        $media = MediaManager::add($file, null, Input::get('validate'));
+	        $media = MediaManager::add($file, null, $validate, $path_type);
 
 	        if ($media->hasErrors())
 	        {
@@ -41,8 +46,8 @@ class MediaController extends Controller {
 	        $status = 'success';
 
 	        $media_id = $media->model->id;
-			$src = $media->model->path();
-			$preview = $media->model->previewPath();
+			$src = $media->model->url();
+			$preview = $media->model->previewURL();
 
 			$input = Form::mediaBind($media_id, $position, $allow_multiple);
 
@@ -65,21 +70,25 @@ class MediaController extends Controller {
 	    return $response;
 	}
 
-	public function unbind($id)
-	{
-		return MediaAssociation::destroy($id);
-	}
-
 	public function meta($id)
 	{
 		$resource = MediaAssociation::find($id);
 
-		if($resource != null){
+		if ($resource != null)
+		{
 			$resource->meta = Input::except('_token');
 			$resource->save();
-			return array('status' => 'ok');
+			return array('status' => 'success');
 		}
 
-		return array('status' => 'not ok','msg' => trans('clumsy/eminem::all.errors.general'));
+		return array(
+			'status' => 'error',
+			'msg'    => trans('clumsy/eminem::all.errors.general')
+		);
+	}
+
+	public function routedMedia(Media $media)
+	{
+		return MediaManager::response($media);
 	}
 }

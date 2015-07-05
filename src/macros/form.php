@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Form;
 use Illuminate\Support\Facades\HTML;
 use Illuminate\Support\Facades\URL;
@@ -22,34 +23,18 @@ use Clumsy\Eminem\Facade as MediaManager;
 
 Form::macro('media', function($options = array())
 {
-    $defaults = array(
-        'id'                => 'media',
-        'label'             => 'Media',
-        'association_type'  => null,
-        'association_id'    => null,
-        'position'          => null,
-        'allow_multiple'    => false,
-        'validate'          => '',
-        'meta'              => null,
-        'show_comments'     => true,
-        'comments'          => '',
-    );
-
-    $options = array_merge($defaults, $options);
+    $options = array_merge(MediaManager::slotDefaults(), $options);
     extract($options, EXTR_SKIP);
 
     Asset::enqueue('media-management.css', 30);
     Asset::enqueue('media-management.js', 30);
-    Asset::json('media', array('boxes' => array(array($id, $allow_multiple, $validate))));
-    Asset::json('media', array(
-        'unbind_url'    => URL::route('media.unbind'),
-        'meta_url'      => URL::route('media.save-meta'),
+    Asset::json('eminem', array('boxes' => array(array($id, $allow_multiple, Crypt::encrypt("{$association_type}|{$position}")))));
+    Asset::json('eminem', array(
+        'meta_url'      => URL::route('eminem.save-meta'),
         'general_error' => trans('clumsy/eminem::all.errors.general')
     ), $replace = true);
 
-    $url = URL::route('media.upload', array(
-        'position' => $position,
-    ));
+    $url = URL::route('eminem.upload');
 
     $output = '';
     $media = false;
@@ -117,8 +102,7 @@ Form::macro('media', function($options = array())
 | Media bind input
 |--------------------------------------------------------------------------
 |
-| Creates hidden inputs to bind media to items which current don't exist
-|
+| Creates hidden inputs to bind media to models
 |
 */
 

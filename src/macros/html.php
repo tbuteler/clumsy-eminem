@@ -12,8 +12,8 @@ HTML::macro('mediaModal', function($id, $label, $media, $meta)
 
 HTML::macro('mediaImage', function($media)
 {	
-    return HTML::image($media->previewPath(), null, array(
-        'data-src'      => $media->path(),
+    return HTML::image($media->previewURL(), null, array(
+        'data-src'      => $media->url(),
         'data-media-id' => $media->id,
     ));
 });

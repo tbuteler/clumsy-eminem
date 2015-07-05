@@ -12,10 +12,42 @@ return array(
 
     /*
      |--------------------------------------------------------------------------
-     | Admin prefix
+     | Default path type
      |--------------------------------------------------------------------------
      |
-     | URL prefix to prepend on default media routes
+     | Whether you want your media to be stored in your public folder and be
+     | directly accessible or served by Laravel via routes and controllers,
+     | so you can process it or secure it inside an admin area.
+     |
+     | Individual media slots can override this setting.
+     |
+     | Supported: "public", "routed"
+     |
+     |
+     */
+
+    'default-path-type' => 'public',
+
+    /*
+     |--------------------------------------------------------------------------
+     | Routed media alias
+     |--------------------------------------------------------------------------
+     |
+     | The name / alias of the route which resolves non-public media.
+     | There is a default route binding, route and controller method to resolve
+     | private media, but these can be overridden, if desired.
+     |
+     |
+     */
+
+    'media-route' => 'eminem.media-route',
+
+    /*
+     |--------------------------------------------------------------------------
+     | URL prefix
+     |--------------------------------------------------------------------------
+     |
+     | URL prefix to prepend on back-end media routes
      |
      */
 
@@ -40,14 +72,16 @@ return array(
 
     /*
      |--------------------------------------------------------------------------
-     | Uploads folder
+     | Upload folders
      |--------------------------------------------------------------------------
      |
-     | Location within the public folder in which to keep media files
+     | Location within the public / storage folders in which to keep media files
      |
      */
 
-    'folder' => 'uploads',
+    'public-folder' => 'media',
+
+    'routed-folder' => 'media',
 
     /*
      |--------------------------------------------------------------------------
@@ -58,25 +92,7 @@ return array(
      |
      */
 
-    'organize'  => true,
-
-    /*
-     |--------------------------------------------------------------------------
-     | Preview mime types
-     |--------------------------------------------------------------------------
-     |
-     | The following mime types will try to be rendered by the browser
-     |
-     */
-
-    'preview-mime-types'  => array(
-        'image/pjpeg',
-        'image/jpeg',
-        'image/gif',
-        'image/png',
-        'image/bmp',
-        'image/png',
-    ),
+    'organize'  => false,
 
     /*
      |--------------------------------------------------------------------------

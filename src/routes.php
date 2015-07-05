@@ -18,19 +18,23 @@ Route::group(
     ),
     function()
     {
-        Route::match(array('POST', 'PUT'), 'media-upload/{position?}', array(
-            'as'   => 'media.upload',
+        Route::match(array('POST', 'PUT'), 'media-upload', array(
+            'as'   => 'eminem.upload',
             'uses' => 'Clumsy\Eminem\Controllers\MediaController@upload'
         ));
 
-        Route::post('media-unbind/{id?}', array(
-            'as'   => 'media.unbind',
-            'uses' => 'Clumsy\Eminem\Controllers\MediaController@unbind'
-        ));
-
         Route::post('media-save-meta/{id?}', array(
-            'as'   => 'media.save-meta',
+            'as'   => 'eminem.save-meta',
             'uses' => 'Clumsy\Eminem\Controllers\MediaController@meta'
         ));
     }
 );
+
+Route::bind('media', function($value) {
+    return Clumsy\Eminem\Models\Media::where('path', $value)->first();
+});
+
+Route::get('eminem/process/{media}', array(
+    'as'   => 'eminem.media-route',
+    'uses' => 'Clumsy\Eminem\Controllers\MediaController@routedMedia'
+))->where('media', '.+'); // Allows media path to have forward slashes

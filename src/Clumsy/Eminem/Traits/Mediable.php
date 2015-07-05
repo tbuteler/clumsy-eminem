@@ -8,6 +8,7 @@ trait Mediable {
         {
             if (isset($model->files)) unset($model->files);
             if (isset($model->media_bind)) unset($model->media_bind);
+            if (isset($model->media_unbind)) unset($model->media_unbind);
         });
 
         self::saved(function($model)
@@ -32,6 +33,14 @@ trait Mediable {
                     }
                 }
             }
+
+            if (\Illuminate\Support\Facades\Input::has('media_unbind'))
+            {
+                foreach (\Illuminate\Support\Facades\Input::get('media_unbind') as $bind_id)
+                {
+                    \Clumsy\Eminem\Models\MediaAssociation::destroy($bind_id);
+                }
+            }
         });
     }
 
@@ -50,8 +59,8 @@ trait Mediable {
     {
         return (bool)sizeof($this->media);
     }
-    
-    public function getMediaByPosition($position = null, $offset = 0)
+
+    public function attachment($position = null, $offset = 0)
     {
         $media = $this->media;
 
@@ -71,11 +80,11 @@ trait Mediable {
     {
         if ($this->hasMedia())
         {
-            $media = $this->getMediaByPosition($position, $offset);
+            $media = $this->attachment($position, $offset);
 
             if ($media)
             {
-                return $media->path();
+                return $media->url();
             }
         }
 
@@ -86,7 +95,7 @@ trait Mediable {
     {
         if ($this->hasMedia())
         {
-            $media = $this->getMediaByPosition($position, $offset);
+            $media = $this->attachment($position, $offset);
 
             if ($media)
             {

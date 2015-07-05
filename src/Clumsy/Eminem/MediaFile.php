@@ -24,7 +24,7 @@ class MediaFile {
     public $model = null;
     public $association = null;
 
-    public function __construct($file, $filename)
+    public function __construct($file, $filename, $path_type = 'public')
     {
         if (!$file instanceof UploadedFile || !$file instanceof File)
         {
@@ -45,26 +45,34 @@ class MediaFile {
         $this->file = $file;
         $this->original_filename = $this->filename;
 
+        $this->model = new Media;
+        $this->model->path_type = $path_type;
+
         $this->errors = new MessageBag;
     }
 
-    protected function basePath()
+    public function basePath($path = null)
     {
-        return Config::get('clumsy/eminem::folder');
+        return $this->model->basePath($path);
     }
 
-    protected function relativePath()
+    public function baseFolder()
     {
-        $base = $this->basePath();
+        return $this->model->baseFolder();
+    }
+
+    public function fullFolder()
+    {
+        $base = $this->baseFolder();
         
-        $organize = Config::get('clumsy/eminem::organize') ? date('Y') . '/' . date('m') : '';
+        $organize = Config::get('clumsy/eminem::organize') ? '/'.date('Y').'/'.date('m') : '';
 
-        return "$base/$organize";
+        return "{$base}{$organize}";
     }
 
-    protected function folderPath()
+    public function fullPath()
     {        
-        return public_path($this->relativePath());
+        return $this->basePath($this->fullFolder());
     }
 
     protected function move($overwrite = false)
@@ -77,7 +85,7 @@ class MediaFile {
         if (!$overwrite)
         {
             $i = 1;
-            while (file_exists($this->folderPath().'/'.$this->filename))
+            while (Filesystem::exists($this->fullPath().'/'.$this->filename))
             {
                 if (preg_match('/\-\d{1,}$/', $name, $count))
                 {
@@ -95,7 +103,7 @@ class MediaFile {
 
         try
         {
-            $this->file->move($this->folderPath(), $this->filename);
+            $this->file->move($this->fullPath(), $this->filename);
         }
         catch (FileException $e)
         {
@@ -120,11 +128,12 @@ class MediaFile {
 
     protected function save()
     {
-        $this->model = Media::create(array(
-            'path_type' => 'relative',
-            'path'      => $this->relativePath().'/'.$this->filename,
+        $this->model->fill(array(
+            'path'      => $this->fullFolder().'/'.$this->filename,
             'mime_type' => $this->mime_type,
         ));
+
+        $this->model->save();
 
         return $this;
     }
@@ -164,11 +173,9 @@ class MediaFile {
             return $this;
         }
 
-        $base = $this->basePath();
-
         do
         {
-            $temp = public_path().'/'.$base.'/'.Str::quickRandom();
+            $temp = $this->basePath($this->baseFolder()).'/'.Str::quickRandom();
         }
         while (Filesystem::isDirectory($temp));
 
