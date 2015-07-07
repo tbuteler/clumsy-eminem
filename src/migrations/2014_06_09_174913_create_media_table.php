@@ -15,7 +15,7 @@ class CreateMediaTable extends Migration {
 		Schema::create('media', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->enum('path_type', array('absolute', 'relative'));
+			$table->string('path_type')->default('public');
 			$table->string('path');
 			$table->string('mime_type');
 			$table->integer('parent_media')->nullable()->default(null);

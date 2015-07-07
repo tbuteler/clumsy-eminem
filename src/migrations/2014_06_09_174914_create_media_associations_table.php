@@ -22,7 +22,7 @@ class CreateMediaAssociationsTable extends Migration {
 			$table->integer('order')->unsigned()->nullable()->default(null);
 			$table->text('meta')->nullable()->default(null);
 
-			$table->foreign('media_id')->references('id')->on('media');
+	        $table->foreign('media_id')->references('id')->on('media')->onDelete('cascade');
 			$table->index('media_association_type');
 			$table->index('media_association_id');
 		});
