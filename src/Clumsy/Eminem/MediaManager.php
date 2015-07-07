@@ -144,10 +144,10 @@ class MediaManager {
         $output = array();
 
         $defaults = array(
-            'allow_multiple'    => false,
-            'validate'          => '',
             'show_comments'     => true,
-            'comments'          => '',
+            'allow_multiple'    => false,
+            'validate'          => null,
+            'comments'          => null,
         );
 
         $options = array_merge($defaults, $options);
@@ -170,26 +170,26 @@ class MediaManager {
             $rules = explode('|', $validate);
             foreach ($rules as $rule)
             {
-                if (str_contains($rule, 'image') && ($show_all || isset($show_comments['mimes'])))
+                if (str_contains($rule, 'image') && ($show_all || in_array('mimes', $show_comments)))
                 {
                     $types = array('jpeg', 'png', 'gif', 'bmp');
                     $output[] = trans('clumsy/eminem::all.comments.mimes', array('values' => '<strong>'.implode(', ', $types).'</strong>'));
                 }
 
-                if (str_contains($rule, 'mimes') && ($show_all || isset($show_comments['mimes'])))
+                if (str_contains($rule, 'mimes') && ($show_all || in_array('mimes', $show_comments)))
                 {
                     list($rule, $types) = explode(':', $rule);
                     $types = explode(',', $types);
                     $output[] = trans('clumsy/eminem::all.comments.mimes', array('values' => '<strong>'.implode(', ', $types).'</strong>'));
                 }
 
-                if (str_contains($rule, 'min') && ($show_all || isset($show_comments['min'])))
+                if (str_contains($rule, 'min') && ($show_all || in_array('min', $show_comments)))
                 {
                     list($rule, $min) = explode(':', $rule);
                     $output[] = trans('clumsy/eminem::all.comments.min', array('min' => '<strong>'.$min.'</strong>'));
                 }
 
-                if (str_contains($rule, 'max') && ($show_all || isset($show_comments['max'])))
+                if (str_contains($rule, 'max') && ($show_all || in_array('max', $show_comments)))
                 {
                     list($rule, $max) = explode(':', $rule);
                     $output[] = trans('clumsy/eminem::all.comments.max', array('max' => '<strong>'.$max.'</strong>'));
@@ -197,7 +197,7 @@ class MediaManager {
             }
         }
 
-        if ($allow_multiple && ($show_all || isset($show_comments['allow_multiple'])))
+        if ($allow_multiple && ($show_all || in_array('allow_multiple', $show_comments)))
         {
             $output[] = trans('clumsy/eminem::all.comments.allow_multiple');
         }

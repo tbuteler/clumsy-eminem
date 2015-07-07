@@ -79,9 +79,7 @@ return array(
      |
      */
 
-    'public-folder' => 'media',
-
-    'routed-folder' => 'media',
+    'folder' => 'media',
 
     /*
      |--------------------------------------------------------------------------

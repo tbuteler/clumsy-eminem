@@ -15,7 +15,7 @@ class UpdateEminemTables extends Migration {
 		Schema::table('media', function(Blueprint $table)
 		{
 			$table->dropColumn('path_type');
-			$table->enum('path_type', array('public', 'routed'))->default('public');
+			$table->string('path_type')->default('public');
 		});
 
 	    Schema::table('media_associations', function($table)

@@ -1,6 +1,7 @@
 <?php namespace Clumsy\Eminem\Models;
 
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File as Filesystem;
 use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\File\File;
 use Intervention\Image\Facades\Image;
@@ -14,14 +15,22 @@ class Media extends \Eloquent {
 
     protected $file = null;
 
+    protected static $image_mimes = array(
+        'jpeg',
+        'jpg',
+        'png',
+        'gif',
+        'bmp',
+    );
+
     public function basePath($path = null)
     {
-        return $this->path_type === 'routed' ? storage_path('eminem/'.$path) : public_path($path);
+        return $this->isRouted() ? storage_path('eminem/'.$path) : public_path($path);
     }
 
     public function baseFolder()
     {
-        return Config::get("clumsy/eminem::{$this->path_type}-folder");
+        return Config::get("clumsy/eminem::folder");
     }
 
     public function filePath()
@@ -51,7 +60,17 @@ class Media extends \Eloquent {
 
     public function isImage()
     {
-        return in_array($this->extension, array('jpeg', 'png', 'gif', 'bmp'));        
+        return in_array($this->extension, static::$image_mimes);
+    }
+
+    public function isExternal()
+    {
+        return $this->path_type === 'external';
+    }
+
+    public function isRouted()
+    {
+        return $this->path_type === 'routed';
     }
 
     public function scopeAssociatedTo($query, $association_id)
@@ -78,7 +97,12 @@ class Media extends \Eloquent {
 
     public function url()
     {
-        return $this->path_type === 'routed' ? $this->routedURL() : $this->publicURL();
+        if ($this->isExternal())
+        {
+            return $this->path;
+        }
+
+        return $this->isRouted() ? $this->routedURL() : $this->publicURL();
     }
 
     public function previewURL()
@@ -140,6 +164,11 @@ class Media extends \Eloquent {
 
     public function getExtensionAttribute()
     {
+        if ($this->isExternal())
+        {
+            return Filesystem::extension($this->path);
+        }
+
         return $this->baseFile()->guessExtension();
     }
 
