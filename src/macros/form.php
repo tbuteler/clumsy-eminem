@@ -54,30 +54,27 @@ Form::macro('media', function($options = array())
         }
 
         $media = $media->get();
-
     }
-    else
+
+    if (Input::old('media_bind'))
     {
-        if (Input::old('media_bind'))
+        $unbound = array();
+
+        foreach (Input::old('media_bind') as $media_id => $attributes)
         {
-            $unbound = array();
-
-            foreach (Input::old('media_bind') as $media_id => $attributes)
+            if ($attributes['position'] !== $position)
             {
-                if ($attributes['position'] !== $position)
-                {
-                    continue;
-                }
-
-                $output .= Form::mediaBind($media_id, $position, $attributes['allow_multiple']);
-                
-                $unbound[] = $media_id;
+                continue;
             }
 
-            if (sizeof($unbound))
-            {
-                $media = Media::whereIn('id', $unbound)->get();
-            }
+            $output .= Form::mediaBind($media_id, $position, $attributes['allow_multiple']);
+            
+            $unbound[] = $media_id;
+        }
+
+        if (sizeof($unbound))
+        {
+            $media = Media::whereIn('id', $unbound)->get();
         }
     }
 
