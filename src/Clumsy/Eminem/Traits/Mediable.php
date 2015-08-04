@@ -55,11 +55,6 @@ trait Mediable {
         return false;
     }
 
-    public function hasMedia()
-    {
-        return (bool)sizeof($this->media);
-    }
-
     public function attachment($position = null, $offset = 0)
     {
         $media = $this->media;
@@ -73,12 +68,24 @@ trait Mediable {
                 ->values();
         }
 
+        if ($offset === 'all')
+        {
+            return $media;
+        }
+
         return $media->offsetExists($offset) ? $media->offsetGet($offset) : null;
+    }
+
+    public function hasMedia($position = null)
+    {
+        $media = $this->attachment($position, 'all');
+
+        return (bool)sizeof($media);
     }
 
     public function mediaPath($position = null, $offset = 0)
     {
-        if ($this->hasMedia())
+        if ($this->hasMedia($position))
         {
             $media = $this->attachment($position, $offset);
 
@@ -93,7 +100,7 @@ trait Mediable {
 
     public function mediaMeta($position = null, $offset = 0)
     {
-        if ($this->hasMedia())
+        if ($this->hasMedia($position))
         {
             $media = $this->attachment($position, $offset);
 
