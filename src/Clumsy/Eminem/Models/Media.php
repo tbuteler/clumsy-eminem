@@ -172,9 +172,24 @@ class Media extends \Eloquent {
         return $this->baseFile()->guessExtension();
     }
 
+    public function getMeta($key)
+    {
+        return array_get($this->meta, $key);
+    }
+
     public function getMetaAttribute($value)
     {
         return json_decode($value, true);
+    }
+
+    public function setMetaAttribute($value)
+    {
+        $this->attributes['meta'] = $value ? json_encode($value, true) : null;
+    }
+
+    public function getAssociationMeta($key)
+    {
+        return array_get($this->association_meta, $key);
     }
 
     public function getAssociationMetaAttribute($value)

@@ -33,7 +33,7 @@ class MediaController extends Controller {
 	    {
 	        $input = '';
 
-	        $media = MediaManager::add($file, null, $validate, $path_type);
+	        $media = MediaManager::add($slot, $file, null);
 
 	        if ($media->hasErrors())
 	        {
@@ -85,10 +85,5 @@ class MediaController extends Controller {
 			'status' => 'error',
 			'msg'    => trans('clumsy/eminem::all.errors.general')
 		);
-	}
-
-	public function routedMedia(Media $media)
-	{
-		return MediaManager::response($media);
 	}
 }

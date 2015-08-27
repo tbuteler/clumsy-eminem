@@ -6,9 +6,18 @@ class MediaAssociation extends \Eloquent {
 
     public $timestamps = false;
 
-    public function setMetaAttribute($value)
+    public function getMeta($key)
     {
-        $this->attributes['meta'] = json_encode($value, true);
+        return array_get($this->meta, $key);
     }
 
+    public function getMetaAttribute($value)
+    {
+        return json_decode($value, true);
+    }
+
+    public function setMetaAttribute($value)
+    {
+        $this->attributes['meta'] = $value ? json_encode($value, true) : null;
+    }
 }

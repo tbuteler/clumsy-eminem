@@ -202,6 +202,13 @@ class MediaFile {
         return $this;
     }
 
+    public function setMeta($meta = null)
+    {
+        $this->model->meta = $meta;
+
+        return $this;
+    }
+
     public function hasErrors()
     {
         return !$this->errors->isEmpty();

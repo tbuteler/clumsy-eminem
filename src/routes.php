@@ -5,16 +5,16 @@ use Illuminate\Support\Facades\Config;
 
 /*
 |--------------------------------------------------------------------------
-| Media Routes
+| Uploading and editing
 |--------------------------------------------------------------------------
 |
 */
 
 Route::group(
     array(
-        'prefix' => Config::get('clumsy/eminem::prefix'),
-        'before' => Config::get('clumsy/eminem::filters.before'),
-        'after'  => Config::get('clumsy/eminem::filters.after'),
+        'prefix' => Config::get('clumsy/eminem::input-prefix'),
+        'before' => Config::get('clumsy/eminem::input-filters-before'),
+        'after'  => Config::get('clumsy/eminem::input-filters-after'),
     ),
     function()
     {
@@ -30,11 +30,34 @@ Route::group(
     }
 );
 
-Route::bind('media', function($value) {
-    return Clumsy\Eminem\Models\Media::where('path', $value)->first();
-});
 
-Route::get('eminem/process/{media}', array(
-    'as'   => 'eminem.media-route',
-    'uses' => 'Clumsy\Eminem\Controllers\MediaController@routedMedia'
-))->where('media', '.+'); // Allows media path to have forward slashes
+/*
+|--------------------------------------------------------------------------
+| Processing and response
+|--------------------------------------------------------------------------
+|
+*/
+
+Route::group(
+    array(
+        'prefix' => Config::get('clumsy/eminem::output-prefix'),
+        'before' => Config::get('clumsy/eminem::output-filters-before'),
+        'after'  => Config::get('clumsy/eminem::output-filters-after'),
+    ),
+    function()
+    {
+        Route::pattern('eminemMedia', '.+'); // Allows media path to have forward slashes
+
+        Route::bind('eminemMedia', function($value) {
+            return Media::where('path', $value)->first();
+        });
+
+        Route::get('eminem/output/{eminemMedia}', array(
+            'as' => 'eminem.media-route',
+            function(Media $media)
+            {
+                return MediaManager::response($media);
+            }
+        ));
+    }
+);

@@ -7,7 +7,7 @@
                 <div class="form-group text">
                     <label for="{{ $value }}">{{ $name }}</label>
                     <input class="form-control" id="{{ $value }}" name="{{ $value }}" 
-                    value="{{ $media->association_meta[$value] or '' }}" type="text">
+                    value="{{ $media->getAssociationMeta($value) }}" type="text">
                 </div>
             @endforeach
         @endif

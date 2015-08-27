@@ -30,17 +30,9 @@ return array(
 
     /*
      |--------------------------------------------------------------------------
-     | Routed media alias
+     | Media input (Uploading and editing)
      |--------------------------------------------------------------------------
-     |
-     | The name / alias of the route which resolves non-public media.
-     | There is a default route binding, route and controller method to resolve
-     | private media, but these can be overridden, if desired.
-     |
-     |
      */
-
-    'media-route' => 'eminem.media-route',
 
     /*
      |--------------------------------------------------------------------------
@@ -51,7 +43,7 @@ return array(
      |
      */
 
-	'prefix' => '',
+	'input-prefix' => '',
 
     /*
      |--------------------------------------------------------------------------
@@ -63,12 +55,19 @@ return array(
      |
      */
 
-    'filters' => array(
+    'input-filters-before' => 'csrf',
+    'input-filters-after'  => '',
 
-        'before' => 'csrf',
+    /*
+     |--------------------------------------------------------------------------
+     | Media output (Processing and response)
+     |--------------------------------------------------------------------------
+     */
 
-        'after'  => '',
-    ),
+    'output-prefix' => '',
+
+    'output-filters-before' => '',
+    'output-filters-after'  => '',
 
     /*
      |--------------------------------------------------------------------------
@@ -90,7 +89,7 @@ return array(
      |
      */
 
-    'organize'  => false,
+    'organize'  => true,
 
     /*
      |--------------------------------------------------------------------------

@@ -16,28 +16,23 @@ class MediaManager {
         return str_replace('.', '', head($extension));
     }
 
-    public function add($file, $filename = null, $rules = null, $path_type = 'public')
+    public function fileForSlot($slot, $file, $filename = null)
     {
+        extract($slot, EXTR_SKIP);
+
         return with(new MediaFile($file, $filename, $path_type))
-                ->validate($rules)
-                ->add();
+                ->validate($validate)
+                ->setMeta($media_meta);
     }
 
-    public function addRouted($file, $filename = null, $rules = null)
+    public function add($slot, $file, $filename = null)
     {
-        return $this->add($file, $filename, $rules, 'routed');
+        return $this->fileForSlot($slot, $file, $filename)->add();
     }
 
-    public function addCopy($file, $filename = null, $rules = null, $path_type = 'public')
+    public function addCopy($slot, $file, $filename = null)
     {
-        return with(new MediaFile($file, $filename, $path_type))
-                ->validate($rules)
-                ->addCopy();
-    }
-
-    public function addRoutedCopy($file, $filename = null, $rules = null)
-    {
-        return $this->addCopy($file, $filename, $rules, 'routed');
+        return $this->fileForSlot($slot, $file, $filename)->addCopy();
     }
 
     public function slotDefaults()
@@ -52,6 +47,7 @@ class MediaManager {
             'allow_multiple'   => false,
             'validate'         => null,
             'meta'             => null,
+            'media_meta'       => null,
             'show_comments'    => true,
             'comments'         => null,
         );
@@ -110,8 +106,7 @@ class MediaManager {
 
     public function getSlot($model, $position)
     {
-        $slots = $this->slots($model);
-        return isset($slots[$position]) ? $slots[$position] : false;
+        return array_get($this->slots($model), $position);
     }
 
     public function response(Media $media)
