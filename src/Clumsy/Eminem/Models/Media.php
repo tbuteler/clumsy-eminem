@@ -86,8 +86,7 @@ class Media extends \Eloquent {
 
     protected function routedURL()
     {
-        $route = Config::get('clumsy/eminem::media-route');
-        return URL::route($route, array('media' => $this->path));
+        return URL::route('eminem.media-route', array('media' => $this->path));
     }
 
     protected function publicURL()
