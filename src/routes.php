@@ -49,14 +49,14 @@ Route::group(
         Route::pattern('eminemMedia', '.+'); // Allows media path to have forward slashes
 
         Route::bind('eminemMedia', function($value) {
-            return Media::where('path', $value)->first();
+            return Clumsy\Eminem\Models\Media::where('path', $value)->first();
         });
 
         Route::get('eminem/output/{eminemMedia}', array(
             'as' => 'eminem.media-route',
-            function(Media $media)
+            function(Clumsy\Eminem\Models\Media $media)
             {
-                return MediaManager::response($media);
+                return Clumsy\Eminem\Facade::response($media);
             }
         ));
     }
