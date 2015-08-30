@@ -1,7 +1,8 @@
-<?php namespace Clumsy\Eminem;
+<?php namespace Clumsy\Eminem\File;
 
 use Clumsy\Eminem\Models\Media;
 use Clumsy\Eminem\Models\MediaAssociation;
+use Clumsy\Eminem\File\File as ReferencedFile;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -28,7 +29,7 @@ class MediaFile {
     {
         if (!$file instanceof UploadedFile || !$file instanceof File)
         {
-            $file = new File($file);
+            $file = new ReferencedFile($file);
         }
         
         if ($file instanceof UploadedFile)

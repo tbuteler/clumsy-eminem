@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\File as Filesystem;
 use Illuminate\Support\Facades\Response;
 use Clumsy\Eminem\Models\Media;
 use Clumsy\Eminem\Models\MediaAssociation;
+use Clumsy\Eminem\File\MediaFile;
 
 class MediaManager {
 
