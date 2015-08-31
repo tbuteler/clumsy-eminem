@@ -2,7 +2,7 @@
 
 use Symfony\Component\HttpFoundation\File\File as BaseFile;
 
-class File as BaseFile {
+class File extends BaseFile {
 
     public function isValid()
     {
