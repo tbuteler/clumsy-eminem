@@ -20,14 +20,14 @@ return array(
     ),
 
     'item' => array(
-        
+
         'filename' => 'Nome do Ficheiro',
-        
+
         'path'     => 'Localização',
-        
+
         'mime'     => 'Tipo MIME',
-        
-        'remove'   => 'Remover mídia',
+
+        'remove'   => 'Remover anexo',
 
         'save'  => 'Guardar',
     ),
