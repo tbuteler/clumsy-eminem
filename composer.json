@@ -17,7 +17,7 @@
     },
     "autoload": {
         "classmap": [
-            "src/migrations"
+            "database/migrations"
         ],
         "psr-0": {
             "Clumsy\\Eminem\\": "src/"
