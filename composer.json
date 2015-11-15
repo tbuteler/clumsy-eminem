@@ -10,17 +10,17 @@
         }
     ],
     "require": {
-        "laravel/framework": ">=5.1.*",
+        "laravel/framework": "5.1.*",
         "laravelcollective/html": "5.1.*",
         "intervention/image": "2.*",
-        "clumsy/assets": "@dev"
+        "clumsy/assets": "0.7.*"
     },
     "autoload": {
         "classmap": [
             "src/migrations"
         ],
         "psr-0": {
-            "Clumsy\\Eminem": "src/"
+            "Clumsy\\Eminem\\": "src/"
         }
     },
     "extra": {
