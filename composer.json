@@ -16,10 +16,7 @@
         "clumsy/assets": "0.7.*"
     },
     "autoload": {
-        "classmap": [
-            "database/migrations"
-        ],
-        "psr-0": {
+        "psr-4": {
             "Clumsy\\Eminem\\": "src/"
         }
     },
