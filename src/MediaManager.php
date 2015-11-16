@@ -43,7 +43,7 @@ class MediaManager
             'association_type' => null,
             'association_id'   => null,
             'position'         => 'media',
-            'path_type'        => config('clumsy/eminem.default-path-type'),
+            'path_type'        => config('clumsy.eminem.default-path-type'),
             'allow_multiple'   => false,
             'validate'         => null,
             'meta'             => null,

@@ -24,7 +24,7 @@ class EminemServiceProvider extends ServiceProvider
     {
         $this->app->register('Intervention\Image\ImageServiceProvider');
 
-        $this->mergeConfigFrom(__DIR__.'/Support/config/config.php', 'clumsy/eminem');
+        $this->mergeConfigFrom(__DIR__.'/config/config.php', 'clumsy.eminem');
 
         $this->app->bind('eminem', function ($app) {
 			return new MediaManager;
@@ -41,7 +41,7 @@ class EminemServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/Support/lang', 'clumsy/eminem');
 
         $this->publishes([
-            __DIR__.'/Support/config/config.php'  => config_path('vendor/clumsy/eminem/config.php'),
+            __DIR__.'/config/config.php'  => config_path('clumsy/eminem.php'),
         ], 'config');
 
         $this->publishes([
@@ -54,11 +54,10 @@ class EminemServiceProvider extends ServiceProvider
 
         $this->registerRoutes();
 
-        require __DIR__.'/Support/helpers.php';
         require __DIR__.'/Support/macros/form.php';
         require __DIR__.'/Support/macros/html.php';
 
-        $assets = include(__DIR__.'/assets/assets.php');
+        $assets = require(__DIR__.'/assets/assets.php');
         Asset::batchRegister($assets);
 
         $this->loadViewsFrom(__DIR__.'/views', 'clumsy/eminem');
@@ -86,8 +85,8 @@ class EminemServiceProvider extends ServiceProvider
 		*/
 
         $this->app['router']->group([
-                'prefix'     => config('clumsy/eminem::input-prefix'),
-                'middleware' => config('clumsy/eminem::input-middleware'),
+                'prefix'     => config('clumsy.eminem.input-prefix'),
+                'middleware' => config('clumsy.eminem.input-middleware'),
             ], function () {
 
                 $this->app['router']->match(['POST', 'PUT'], 'media-upload', [
@@ -110,8 +109,8 @@ class EminemServiceProvider extends ServiceProvider
 		*/
 
         $this->app['router']->group([
-                'prefix'     => config('clumsy/eminem.output-prefix'),
-                'middleware' => config('clumsy/eminem.output-middleware'),
+                'prefix'     => config('clumsy.eminem.output-prefix'),
+                'middleware' => config('clumsy.eminem.output-middleware'),
             ], function () {
 
                 $this->app['router']->pattern('eminemMedia', '.+'); // Allows media path to have forward slashes

@@ -31,7 +31,7 @@ class Media extends Eloquent
 
     public function baseFolder()
     {
-        return config("clumsy/eminem.folder");
+        return config("clumsy.eminem.folder");
     }
 
     public function filePath()
@@ -109,13 +109,13 @@ class Media extends Eloquent
             return $this->url();
         }
 
-        $placeholders = config('clumsy/eminem::placeholder-folder').'/';
+        $placeholders = config('clumsy.eminem.placeholder-folder').'/';
 
-        if (file_exists(public_path().'/'.$placeholders.$this->extension.'.png')) {
-            return url($placeholders.$this->extension.'.png');
+        if (file_exists(public_path("{$placeholders}{$this->extension}.png"))) {
+            return url("{$placeholders}{$this->extension}.png");
         }
 
-        return url($placeholders.'unknown.png');
+        return url("{$placeholders}unknown.png");
     }
 
     public function bind(array $options = [])

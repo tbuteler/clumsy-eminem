@@ -62,7 +62,7 @@ class MediaFile
     {
         $base = $this->baseFolder();
 
-        $organize = config('clumsy/eminem.organize') ? DIRECTORY_SEPARATOR.date('Y').DIRECTORY_SEPARATOR.date('m') : '';
+        $organize = config('clumsy.eminem.organize') ? DIRECTORY_SEPARATOR.date('Y').DIRECTORY_SEPARATOR.date('m') : '';
 
         return "{$base}{$organize}";
     }
