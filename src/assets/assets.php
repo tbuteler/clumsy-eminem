@@ -19,16 +19,18 @@ return [
     ],
 
     'media-management.css' => [
-        'set'   => 'styles',
-        'path'  => 'vendor/clumsy/eminem/css/media-management.css',
-        'req'   => 'bootstrap',
-        'v'     => '0.7.0',
+        'set'    => 'styles',
+        'path'   => 'vendor/clumsy/eminem/css/media-management.css',
+        'req'    => 'bootstrap',
+        'v'      => '0.7.0',
+        'elixir' => false,
     ],
 
     'media-management.js' => [
-        'set'   => 'footer',
-        'path'  => 'vendor/clumsy/eminem/js/media-management.min.js',
-        'req'   => 'bootstrap.js',
-        'v'     => '0.7.0',
+        'set'    => 'footer',
+        'path'   => 'vendor/clumsy/eminem/js/media-management.min.js',
+        'req'    => 'bootstrap.js',
+        'v'      => '0.7.0',
+        'elixir' => false,
     ],
 ];
