@@ -4,7 +4,6 @@ namespace Clumsy\Eminem;
 
 use Illuminate\Support\Facades\File as Filesystem;
 use Clumsy\Eminem\Models\Media;
-use Clumsy\Eminem\Models\MediaAssociation;
 use Clumsy\Eminem\File\MediaFile;
 
 class MediaManager

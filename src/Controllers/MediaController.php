@@ -66,7 +66,7 @@ class MediaController extends Controller
     {
         $resource = MediaAssociation::find($id);
 
-        if ($resource != null) {
+        if (!is_null($resource)) {
             $resource->meta = request()->except('_token');
             $resource->save();
             return ['status' => 'success'];

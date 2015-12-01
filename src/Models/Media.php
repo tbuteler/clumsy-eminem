@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\File as Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
 use Intervention\Image\Facades\Image;
-use Clumsy\Eminem\Facade as MediaManager;
 
 class Media extends Eloquent
 {

@@ -1,14 +1,14 @@
 <div id="{{ $id }}-modal" class="modal fade">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            
+
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">{{ trans('clumsy/eminem::all.modal.close') }}</span></button>
                 <h4 class="modal-title">{{ $label }}</h4>
             </div>
-            
+
             <div class="modal-body">
-                
+
                 <ul class="nav nav-pills" role="tablist">
                     <li class="{{ !$media->isEmpty() ? 'active' : 'hidden' }}">
                         <a class="current-a" href="#{{ $id }}-current" role="tab" data-toggle="pill">
@@ -32,7 +32,7 @@
                 </ul>
 
                 <div class="tab-content">
-                    
+
                     <div class="tab-pane fade {{ !$media->isEmpty() ? 'in active' : '' }}" id="{{ $id }}-current">
                         <div class="current-media">
                         @foreach ($media as $m)
@@ -55,13 +55,13 @@
                         </div>
 
                     </div>
-                    
+
                     <?php
                     /*
                     <div class="tab-pane fade" id="{{ $id }}-library"></div>
                     */
                     ?>
-                
+
                 </div>
             </div>
         </div>

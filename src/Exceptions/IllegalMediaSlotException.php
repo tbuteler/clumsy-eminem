@@ -2,4 +2,7 @@
 
 namespace Clumsy\Eminem\Exceptions;
 
-class IllegalMediaSlotException extends \RuntimeException {}
+class IllegalMediaSlotException extends \RuntimeException
+{
+
+}

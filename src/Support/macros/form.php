@@ -30,7 +30,7 @@ Form::macro('media', function (array $options = []) {
     Asset::json('eminem', [
         'meta_url'      => route('eminem.save-meta'),
         'general_error' => trans('clumsy/eminem::all.errors.general')
-    ], $replace = true);
+    ], true);
 
     $url = route('eminem.upload');
 
