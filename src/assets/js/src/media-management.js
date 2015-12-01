@@ -1,7 +1,7 @@
 (function($, window, document, undefined) {
 
     var pluginName = 'mediaBox';
- 
+
     function Plugin(element, options) {
 
         this.el = element;
@@ -14,7 +14,7 @@
     }
 
     Plugin.prototype = {
-        
+
         init: function() {
 
             var options = this.options,
@@ -125,26 +125,28 @@
         },
 
         destroy: function() {
-            
+
             this._raw();
             this.$el.removeData();
         },
 
         update: function() {
-            
+
             this.$el.find('.fileupload-wrapper').hide();
             this._raw();
             this._updateGrid();
             this.$el.find('.fileupload-wrapper').fadeIn('fast');
         },
 
-        remove: function(src) {
+        remove: function(data) {
 
             var $box = this.$el;
 
             this._raw();
+
+            // Remove images from media box using src attribute
             this.$el.find('img').each(function(i,el){
-                if ($(el).data('src') === src) {
+                if ($(el).data('src') === data.src) {
                     $box.trigger("removed.mediaBox", [{
                         media_id: $(el).attr('data-media-id')
                     }]);
@@ -152,8 +154,12 @@
                     return false;
                 }
             });
+
+            // Remove images that would be added on save
+            $box.closest('form').find('input[data-media-id="'+data.mediaId+'"]').remove();
+
             this._store();
-            this.checkEmpty();            
+            this.checkEmpty();
             this.update();
         },
 
@@ -169,7 +175,7 @@
         },
 
         updateModal: function() {
-            
+
             var id = this.$el.attr('id'),
                 $modal = $('#'+id+'-modal');
 
@@ -201,7 +207,7 @@
             if (!this.options.allowMultiple) {
                 return false;
             }
-            
+
             // Reset plugin data, so it inits properly
             this.$el.removeData('plugin_photosetGrid').removeAttr('data-width');
             this.$el.data('raw', this.$el.html());
@@ -258,7 +264,7 @@
 $(function() {
 
     if (typeof handover !== 'undefined' && typeof handover.eminem !== 'undefined') {
-        
+
         $(handover.eminem.boxes).each(function(i, media){
             $('#'+media[0]).mediaBox({
                 allowMultiple: media[1],
@@ -280,7 +286,7 @@ $(function() {
 
             $item.fadeOut('fast', function(){
                 $item.remove();
-                $box.mediaBox('remove', $img.data('src'));
+                $box.mediaBox('remove', $img.data());
                 $box.mediaBox('updateModal');
                 if (bind_id !== '') {
                     var unbind = '<input type="hidden" name="media_unbind[]" value="'+bind_id+'" />';
@@ -291,7 +297,7 @@ $(function() {
 
         $(document).on('submit', 'form.meta', function(event){
             event.preventDefault();
-            
+
             var $el = $(this);
             var $btn = $(this).find('.media-save-meta');
             $el.prop('disabled', true).siblings('button').prop('disabled', true);

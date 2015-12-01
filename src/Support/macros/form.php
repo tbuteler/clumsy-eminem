@@ -95,8 +95,8 @@ Form::macro('media', function (array $options = []) {
 
 Form::macro('mediaBind', function ($media_id, $position = null, $allow_multiple = false) {
 
-    $output = Form::hidden("media_bind[{$media_id}][position]", $position);
-    $output .= Form::hidden("media_bind[{$media_id}][allow_multiple]", $allow_multiple);
+    $output = Form::hidden("media_bind[{$media_id}][position]", $position, ['data-media-id' => $media_id]);
+    $output .= Form::hidden("media_bind[{$media_id}][allow_multiple]", $allow_multiple, ['data-media-id' => $media_id]);
 
     return $output;
 });

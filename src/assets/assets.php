@@ -9,12 +9,12 @@ return [
 
     'bootstrap' => [
         'set'   => 'styles',
-        'path'  => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css',
+        'path'  => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css',
     ],
 
     'bootstrap.js' => [
         'set'   => 'footer',
-        'path'  => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js',
+        'path'  => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
         'req'   => 'jquery',
     ],
 
@@ -22,7 +22,7 @@ return [
         'set'    => 'styles',
         'path'   => 'vendor/clumsy/eminem/css/media-management.css',
         'req'    => 'bootstrap',
-        'v'      => '0.7.0',
+        'v'      => '0.9.1',
         'elixir' => false,
     ],
 
@@ -30,7 +30,7 @@ return [
         'set'    => 'footer',
         'path'   => 'vendor/clumsy/eminem/js/media-management.min.js',
         'req'    => 'bootstrap.js',
-        'v'      => '0.7.0',
+        'v'      => '0.9.1',
         'elixir' => false,
     ],
 ];
