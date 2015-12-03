@@ -187,6 +187,16 @@ class Media extends Eloquent
         return json_decode($value, true);
     }
 
+    public function getPivotMeta($key = null)
+    {
+        if (!is_null($this->pivot)) {
+            $meta = json_decode($this->pivot->meta, true);
+            return is_null($key) ? $meta : array_get($meta, $key);
+        }
+
+        return null;
+    }
+
     public function __toString()
     {
         return $this->url();

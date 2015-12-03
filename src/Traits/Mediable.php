@@ -72,11 +72,11 @@ trait Mediable
     {
         $options = array_merge(
             $this->getMediaSlot($position),
-            array(
+            [
                 'association_type' => get_class($this),
                 'association_id'   => $this->id,
                 'position'         => $position,
-            )
+            ]
         );
 
         return MediaManager::add($options, $file, $filename)->bind($options);
@@ -113,11 +113,19 @@ trait Mediable
         return $media->offsetExists($offset) ? $media->offsetGet($offset) : null;
     }
 
+    public function allMedia($position = null)
+    {
+        return $this->attachment($position, 'all');
+    }
+
+    public function countMedia($position = null)
+    {
+        return count($this->attachment($position, 'all'));
+    }
+
     public function hasMedia($position = null)
     {
-        $media = $this->attachment($position, 'all');
-
-        return (bool)count($media);
+        return (bool)$this->countMedia($position);
     }
 
     public function mediaPath($position = null, $offset = 0)
