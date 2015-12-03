@@ -12,7 +12,7 @@
 
             @if ($media)
                 @foreach ($media as $m)
-                    {!! Collective\Html\HtmlFacade::mediaImage($m) !!}
+                    @include('clumsy/eminem::media-image', ['media' => $m])
                 @endforeach
             @endif
 

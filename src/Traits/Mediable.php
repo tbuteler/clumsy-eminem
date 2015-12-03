@@ -2,11 +2,16 @@
 
 namespace Clumsy\Eminem\Traits;
 
+use Illuminate\Database\Eloquent\Model as Eloquent;
+use Clumsy\Eminem\Models\MediaAssociation;
+use Clumsy\Eminem\Models\Media;
+use Clumsy\Eminem\Facade as MediaManager;
+
 trait Mediable
 {
     public static function bootMediable()
     {
-        self::saving(function ($model) {
+        self::saving(function (Eloquent $model) {
 
             if (isset($model->files)) {
                 unset($model->files);
@@ -19,11 +24,11 @@ trait Mediable
             }
         });
 
-        self::saved(function ($model) {
+        self::saved(function (Eloquent $model) {
 
             if (request()->has('media_bind')) {
                 foreach (request()->get('media_bind') as $media_id => $attributes) {
-                    $media = \Clumsy\Eminem\Models\Media::find($media_id);
+                    $media = Media::find($media_id);
 
                     if ($media) {
                         $options = array_merge(
@@ -41,7 +46,7 @@ trait Mediable
 
             if (request()->has('media_unbind')) {
                 foreach (request()->get('media_unbind') as $bind_id) {
-                    \Clumsy\Eminem\Models\MediaAssociation::destroy($bind_id);
+                    MediaAssociation::destroy($bind_id);
                 }
             }
         });
@@ -49,7 +54,7 @@ trait Mediable
 
     public function media()
     {
-        return $this->morphToMany('\Clumsy\Eminem\Models\Media', 'media_association')
+        return $this->morphToMany(Media::class, 'media_association')
                     ->withPivot('position', 'meta');
     }
 
@@ -60,7 +65,7 @@ trait Mediable
 
     public function getMediaSlot($position)
     {
-        return \Clumsy\Eminem\Facade::getSlot($this, $position);
+        return MediaManager::getSlot($this, $position);
     }
 
     public function addToMediaSlot($position, $file, $filename = null)
@@ -74,7 +79,7 @@ trait Mediable
             )
         );
 
-        return \Clumsy\Eminem\Facade::add($options, $file, $filename)->bind($options);
+        return MediaManager::add($options, $file, $filename)->bind($options);
     }
 
     public function addCopyToMediaSlot($position, $file, $filename = null)
@@ -88,7 +93,7 @@ trait Mediable
             ]
         );
 
-        return \Clumsy\Eminem\Facade::addCopy($options, $file, $filename)->bind($options);
+        return MediaManager::addCopy($options, $file, $filename)->bind($options);
     }
 
     public function attachment($position = null, $offset = 0)
@@ -96,7 +101,7 @@ trait Mediable
         $media = $this->media;
 
         if ($position) {
-            $media = $media->filter(function ($media) use ($position) {
+            $media = $media->filter(function (Media $media) use ($position) {
                 return $media->pivot->position === $position;
             })->values();
         }

@@ -1,5 +1,5 @@
 <div class="media-item">
-    {!! Collective\Html\HtmlFacade::mediaImage($media) !!}
+    @include('clumsy/eminem::media-image', compact('media'))
     <div class="actions">
     	@if(isset($meta) && $meta != null)
             <form method="POST" action="{{ route('eminem.save-meta', $media->association_id) }}" accept-charset="UTF-8" class="meta">

@@ -4,7 +4,6 @@ namespace Clumsy\Eminem\Controllers;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Crypt;
-use Collective\Html\FormFacade as Form;
 use Clumsy\Eminem\Models\Media;
 use Clumsy\Eminem\Models\MediaAssociation;
 use Clumsy\Eminem\Facade as MediaManager;
@@ -39,17 +38,21 @@ class MediaController extends Controller
 
             $status = 'success';
 
-            $media_id = $media->model->id;
+            $mediaId = $media->model->id;
             $src = $media->model->url();
             $preview = $media->model->previewURL();
 
-            $input = Form::mediaBind($media_id, $position, $allow_multiple);
+            $input .= view('clumsy/eminem::media-bind', [
+                'mediaId'       => $mediaId,
+                'position'      => $position,
+                'allowMultiple' => $allow_multiple
+            ]);
 
             $html_data = [];
             $html_data['media'] = $media->model;
             $html = view('clumsy/eminem::media-item', $html_data)->render();
 
-            $results[] = compact('media_id', 'src', 'preview', 'status', 'input', 'html');
+            $results[] = compact('mediaId', 'src', 'preview', 'status', 'input', 'html');
         }
 
         event('eminem.uploaded', array($results));

@@ -11,7 +11,6 @@
     ],
     "require": {
         "laravel/framework": "5.1.*",
-        "laravelcollective/html": "5.1.*",
         "intervention/image": "2.*",
         "clumsy/assets": "0.7.*"
     },
@@ -25,7 +24,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.9.1-dev"
+            "dev-master": "0.10.0-dev"
         }
     },
     "minimum-stability": "dev",

@@ -22,7 +22,7 @@ return [
         'set'    => 'styles',
         'path'   => 'vendor/clumsy/eminem/css/media-management.css',
         'req'    => 'bootstrap',
-        'v'      => '0.9.1',
+        'v'      => '0.10.0',
         'elixir' => false,
     ],
 
@@ -30,7 +30,7 @@ return [
         'set'    => 'footer',
         'path'   => 'vendor/clumsy/eminem/js/media-management.min.js',
         'req'    => 'bootstrap.js',
-        'v'      => '0.9.1',
+        'v'      => '0.10.0',
         'elixir' => false,
     ],
 ];

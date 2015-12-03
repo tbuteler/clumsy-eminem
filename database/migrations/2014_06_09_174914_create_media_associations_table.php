@@ -36,7 +36,7 @@ class CreateMediaAssociationsTable extends Migration
      */
     public function down()
     {
-        Schema::table('media_associations', function ($table) {
+        Schema::table('media_associations', function (Blueprint $table) {
 
             $table->dropForeign('media_associations_media_id_foreign');
         });

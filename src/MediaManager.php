@@ -112,14 +112,14 @@ class MediaManager
         return $media->isImage() ? $this->imageResponse($media) : $this->fileResponse($media);
     }
 
-    public function imageResponse($media)
+    public function imageResponse(Media $media)
     {
         $image = $media->file();
 
         return $image->response();
     }
 
-    public function fileResponse($media)
+    public function fileResponse(Media $media)
     {
         $file = Filesystem::get($media->filePath());
         $response = response($file);

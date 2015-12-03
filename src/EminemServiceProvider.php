@@ -38,7 +38,7 @@ class EminemServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadTranslationsFrom(__DIR__.'/Support/lang', 'clumsy/eminem');
+        $this->loadTranslationsFrom(__DIR__.'/lang', 'clumsy/eminem');
 
         $this->publishes([
             __DIR__.'/config/config.php'  => config_path('clumsy/eminem.php'),
@@ -53,9 +53,6 @@ class EminemServiceProvider extends ServiceProvider
 	    ], 'migrations');
 
         $this->registerRoutes();
-
-        require __DIR__.'/Support/macros/form.php';
-        require __DIR__.'/Support/macros/html.php';
 
         $assets = require(__DIR__.'/assets/assets.php');
         Asset::batchRegister($assets);
