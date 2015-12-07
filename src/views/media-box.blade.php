@@ -25,6 +25,6 @@
 
     </div>
 
-    <input id="{{ $id }}-input" type="file" name="files[]" data-url="{{ $url }}" {{ $options['allow_multiple'] ? 'multiple' : ''}}>
+    <input id="{{ $id }}-input" type="file" name="files[]" data-url="{{ $url }}" {{ $slot['allow_multiple'] ? 'multiple' : ''}}>
 
 </div>

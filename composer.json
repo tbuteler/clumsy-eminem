@@ -15,9 +15,6 @@
         "clumsy/assets": "0.7.*"
     },
     "autoload": {
-        "files": [
-            "src/Support/helpers.php"
-        ],
         "psr-4": {
             "Clumsy\\Eminem\\": "src/"
         }

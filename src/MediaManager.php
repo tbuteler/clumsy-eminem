@@ -2,12 +2,21 @@
 
 namespace Clumsy\Eminem;
 
+use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File as Filesystem;
+use Clumsy\Assets\Facade as Asset;
 use Clumsy\Eminem\Models\Media;
 use Clumsy\Eminem\File\MediaFile;
 
 class MediaManager
 {
+    protected function hasMultipleSlots($array)
+    {
+        return (bool) count(array_filter(array_keys($array), 'is_string'));
+    }
+
     public function guessExtension($path)
     {
         preg_match('/\.\w{2,4}$/', $path, $extension);
@@ -75,7 +84,7 @@ class MediaManager
             'association_id'   => $id,
         ];
 
-        if (!array_is_associative($defined)) {
+        if (!$this->hasMultipleSlots($defined)) {
             foreach ($defined as $slot) {
                 $slots[$slot['position']] = array_merge(
                     $this->slotDefaults(),
@@ -127,19 +136,75 @@ class MediaManager
         return $response;
     }
 
-    public function mediaSlotComments(array $options = [])
+    public function mediaBox(Eloquent $model, $position)
+    {
+        $slot = self::getSlot($model, $position);
+        extract($slot);
+
+        Asset::enqueue('media-management.css', 30);
+        Asset::enqueue('media-management.js', 30);
+        Asset::json('eminem', ['boxes' => [[$id, $allow_multiple, Crypt::encrypt("{$association_type}|{$position}")]]]);
+        Asset::json('eminem', [
+            'meta_url'      => route('eminem.save-meta'),
+            'general_error' => trans('clumsy/eminem::all.errors.general')
+        ], true);
+
+        $url = route('eminem.upload');
+
+        $output = '';
+
+        $media = false;
+        if ($model->exists) {
+            $media = $model->allMedia($position);
+        }
+
+        if (old('media_bind')) {
+
+            $unbound = [];
+
+            foreach (old('media_bind') as $mediaId => $attributes) {
+                if ($attributes['position'] !== $position) {
+                    continue;
+                }
+
+                $output .= view('clumsy/eminem::media-bind', [
+                    'mediaId'       => $mediaId,
+                    'position'      => $position,
+                    'allowMultiple' => $attributes['allow_multiple']
+                ]);
+
+                $unbound[] = $mediaId;
+            }
+
+            if (count($unbound)) {
+                $media = Media::whereIn('id', $unbound)->get();
+            }
+        }
+
+        $comments = self::mediaSlotComments($slot);
+        if (count($comments)) {
+            $comments = '<ul><li><small>'.implode('</small></li><li><small>', $comments).'</small></li></ul>';
+        }
+
+        $output .= view('clumsy/eminem::media-box', compact('id', 'label', 'media', 'slot', 'comments', 'url'))->render();
+
+        Event::listen('Print footer scripts', function () use ($id, $label, $media, $meta) {
+
+            if (!$media) {
+                $media = collect();
+            }
+
+            return view('clumsy/eminem::media-modal', compact('id', 'label', 'media', 'meta'));
+        });
+
+        return $output;
+    }
+
+    public function mediaSlotComments($slot)
     {
         $output = [];
 
-        $defaults = [
-            'show_comments'  => true,
-            'allow_multiple' => false,
-            'validate'       => null,
-            'comments'       => null,
-        ];
-
-        $options = array_merge($defaults, $options);
-        extract($options, EXTR_SKIP);
+        extract($slot);
 
         $show_all = $show_comments && !is_array($show_comments);
 

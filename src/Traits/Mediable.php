@@ -55,7 +55,7 @@ trait Mediable
     public function media()
     {
         return $this->morphToMany(Media::class, 'media_association')
-                    ->withPivot('position', 'meta');
+                    ->withPivot('position', 'meta', 'id as bindId');
     }
 
     public function mediaSlots()
@@ -94,6 +94,11 @@ trait Mediable
         );
 
         return MediaManager::addCopy($options, $file, $filename)->bind($options);
+    }
+
+    public function mediaBox($position)
+    {
+        return MediaManager::mediaBox($this, $position);
     }
 
     public function attachment($position = null, $offset = 0)
