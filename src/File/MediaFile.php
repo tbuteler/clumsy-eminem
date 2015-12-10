@@ -2,7 +2,7 @@
 
 namespace Clumsy\Eminem\File;
 
-use Clumsy\Eminem\Models\Media;
+use Clumsy\Eminem\Facade as MediaManager;
 use Clumsy\Eminem\File\File as ReferencedFile;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -41,7 +41,7 @@ class MediaFile
         $this->file = $file;
         $this->original_filename = $this->filename;
 
-        $this->model = new Media;
+        $this->model = MediaManager::media();
         $this->model->path_type = $path_type;
 
         $this->errors = new MessageBag;

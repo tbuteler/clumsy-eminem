@@ -28,7 +28,7 @@ trait Mediable
 
             if (request()->has('media_bind')) {
                 foreach (request()->get('media_bind') as $media_id => $attributes) {
-                    $media = Media::find($media_id);
+                    $media = MediaManager::media()->find($media_id);
 
                     if ($media) {
                         $options = array_merge(
@@ -54,8 +54,13 @@ trait Mediable
 
     public function media()
     {
-        return $this->morphToMany(Media::class, 'media_association')
-                    ->withPivot('position', 'meta', 'id as bindId');
+        return $this->morphToMany(
+            MediaManager::mediaModel(),
+            'media_association',
+            'media_associations',
+            'media_association_id',
+            'media_id'
+        )->withPivot('position', 'meta', 'id as bindId');
     }
 
     public function mediaSlots()

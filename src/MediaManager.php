@@ -7,11 +7,22 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File as Filesystem;
 use Clumsy\Assets\Facade as Asset;
-use Clumsy\Eminem\Models\Media;
 use Clumsy\Eminem\File\MediaFile;
+use Clumsy\Eminem\Models\Media;
 
 class MediaManager
 {
+    public function mediaModel()
+    {
+        return config('clumsy.eminem.media-model');
+    }
+
+    public function media()
+    {
+        $model = $this->mediaModel();
+        return new $model;
+    }
+
     protected function hasMultipleSlots($array)
     {
         return (bool) count(array_filter(array_keys($array), 'is_string'));
@@ -177,7 +188,7 @@ class MediaManager
             }
 
             if (count($unbound)) {
-                $media = Media::whereIn('id', $unbound)->get();
+                $media = self::media()->whereIn('id', $unbound)->get();
             }
         }
 

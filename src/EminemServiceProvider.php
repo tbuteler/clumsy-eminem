@@ -113,7 +113,7 @@ class EminemServiceProvider extends ServiceProvider
                 $this->app['router']->pattern('eminemMedia', '.+'); // Allows media path to have forward slashes
 
                 $this->app['router']->bind('eminemMedia', function ($value) {
-                    return Media::where('path', $value)->first();
+                    return MediaManager::media()->where('path', $value)->first();
                 });
 
                 $this->app['router']->get('eminem/output/{eminemMedia}', [

@@ -12,6 +12,18 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | Media model
+     |--------------------------------------------------------------------------
+     |
+     | The model to use for media within Eminem. If not using Eminem's default
+     | Media model, the overriding model must at least extend it.
+     |
+     */
+
+    'media-model' => \Clumsy\Eminem\Models\Media::class,
+
+    /*
+     |--------------------------------------------------------------------------
      | Default path type
      |--------------------------------------------------------------------------
      |
