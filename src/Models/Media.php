@@ -162,6 +162,23 @@ class Media extends Eloquent
         return $this->baseFile()->guessExtension();
     }
 
+    public function getNameAttribute()
+    {
+        return Filesystem::name($this->path);
+    }
+
+    public function getNameAndExtensionAttribute()
+    {
+        $name = $this->name;
+
+        $extension = $this->extension;
+        if ($extension) {
+            $name .= ".{$extension}";
+        }
+
+        return $name;
+    }
+
     public function getMeta($key)
     {
         return array_get($this->meta, $key);
