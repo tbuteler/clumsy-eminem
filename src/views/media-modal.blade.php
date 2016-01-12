@@ -1,4 +1,4 @@
-<div id="{{ $id }}-modal" class="modal fade">
+<div id="{{ $id }}-modal" class="eminem-modal modal fade">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
 

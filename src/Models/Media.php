@@ -130,7 +130,9 @@ class Media extends Eloquent
         extract($options, EXTR_SKIP);
 
         if ((int)$association_id !== 0) {
+
             if (!$allow_multiple) {
+
                 $existing = MediaAssociation::where('media_association_id', $association_id);
 
                 if ($association_type !== null) {
@@ -151,6 +153,16 @@ class Media extends Eloquent
                 'position'               => $position,
             ]);
         }
+    }
+
+    public function rename($newName)
+    {
+        $newPath = str_replace($this->name, $newName, $this->path);
+
+        Filesystem::move($this->basePath($this->path), $this->basePath($newPath));
+
+        $this->path = $newPath;
+        $this->save();
     }
 
     public function getExtensionAttribute()

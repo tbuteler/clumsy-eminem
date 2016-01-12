@@ -147,20 +147,23 @@ class MediaManager
         return $response;
     }
 
-    public function mediaBox(Eloquent $model, $position)
+    public function mediaBox(Eloquent $model, $position, $options = [])
     {
         $slot = self::getSlot($model, $position);
         extract($slot);
 
-        Asset::enqueue('media-management.css', 30);
-        Asset::enqueue('media-management.js', 30);
+        $options = array_merge([
+            'url'      => route('eminem.upload'),
+            'meta_url' => route('eminem.save-meta'),
+        ], $options);
+        extract($options);
+
+        Asset::enqueue(['media-management.css', 'media-management.js'], 30);
         Asset::json('eminem', ['boxes' => [[$id, $allow_multiple, Crypt::encrypt("{$association_type}|{$position}")]]]);
         Asset::json('eminem', [
-            'meta_url'      => route('eminem.save-meta'),
+            'meta_url'      => $meta_url,
             'general_error' => trans('clumsy/eminem::all.errors.general')
         ], true);
-
-        $url = route('eminem.upload');
 
         $output = '';
 
@@ -174,6 +177,7 @@ class MediaManager
             $unbound = [];
 
             foreach (old('media_bind') as $mediaId => $attributes) {
+
                 if ($attributes['position'] !== $position) {
                     continue;
                 }

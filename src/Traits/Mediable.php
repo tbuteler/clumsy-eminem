@@ -63,6 +63,16 @@ trait Mediable
         )->withPivot('position', 'meta', 'id as bindId');
     }
 
+    public function uploadMediaUrl()
+    {
+        return property_exists($this, 'uploadMediaRoute') ? route($this->uploadMediaRoute) : route('eminem.upload');
+    }
+
+    public function updatedMediaMetaUrl()
+    {
+        return property_exists($this, 'updatedMediaMetaRoute') ? route($this->updatedMediaMetaRoute) : route('eminem.save-meta');
+    }
+
     public function mediaSlots()
     {
         return false;
@@ -103,6 +113,10 @@ trait Mediable
 
     public function mediaBox($position)
     {
+        $options = [
+            'url'      => $this->uploadMediaUrl(),
+            'meta_url' => $this->updatedMediaMetaUrl(),
+        ];
         return MediaManager::mediaBox($this, $position);
     }
 
@@ -165,5 +179,10 @@ trait Mediable
     public function mediaPlaceholder($position = null)
     {
         return '';
+    }
+
+    public function onMediaAssociation(Media $media, $position)
+    {
+
     }
 }
