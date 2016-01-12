@@ -113,11 +113,10 @@ trait Mediable
 
     public function mediaBox($position)
     {
-        $options = [
+        return MediaManager::mediaBox($this, $position, [
             'url'      => $this->uploadMediaUrl(),
             'meta_url' => $this->updatedMediaMetaUrl(),
-        ];
-        return MediaManager::mediaBox($this, $position);
+        ]);
     }
 
     public function attachment($position = null, $offset = 0)
