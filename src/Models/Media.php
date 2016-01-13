@@ -146,6 +146,12 @@ class Media extends Eloquent
                 $existing->delete();
             }
 
+            // Trigger binding events, if any
+            $associatedModel = with(new $association_type)->find($association_id);
+            if (method_exists($associatedModel, 'onMediaAssociation')) {
+                $associatedModel->onMediaAssociation($this, $position);
+            }
+
             return MediaAssociation::create([
                 'media_id'               => $this->id,
                 'media_association_type' => $association_type,
@@ -163,6 +169,9 @@ class Media extends Eloquent
 
         $this->path = $newPath;
         $this->save();
+
+        // In case file was already instantiated, make it again with new path
+        $this->makeFile();
     }
 
     public function getExtensionAttribute()

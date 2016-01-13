@@ -11,20 +11,23 @@ use Clumsy\Eminem\Exceptions\IllegalMediaSlotException;
 
 class MediaController extends Controller
 {
-    public function upload()
+    public function upload($bind = false)
     {
         $association = Crypt::decrypt(request()->get('association'));
-        list($model, $position) = explode('|', $association);
+        list($model, $association_id, $position) = explode('|', $association);
 
         if (!$slot = MediaManager::getSlot($model, $position)) {
             throw new IllegalMediaSlotException;
         }
+
+        $slot['association_id'] = $association_id;
 
         extract($slot, EXTR_SKIP);
 
         $results = [];
 
         foreach (request()->file('files') as $file) {
+
             $input = '';
 
             $media = MediaManager::add($slot, $file, null);
@@ -38,11 +41,15 @@ class MediaController extends Controller
 
             $status = 'success';
 
+            if ($bind) {
+                $media->bind($slot);
+            }
+
             $mediaId = $media->model->id;
             $src = $media->model->url();
             $preview = $media->model->previewURL();
 
-            $input .= view('clumsy/eminem::media-bind', [
+            $input .= view($view_bind, [
                 'mediaId'       => $mediaId,
                 'position'      => $position,
                 'allowMultiple' => $allow_multiple
@@ -50,7 +57,7 @@ class MediaController extends Controller
 
             $html_data = [];
             $html_data['media'] = $media->model;
-            $html = view('clumsy/eminem::media-item', $html_data)->render();
+            $html = view($view_media_item, $html_data)->render();
 
             $results[] = compact('mediaId', 'src', 'preview', 'status', 'input', 'html');
         }
@@ -63,6 +70,11 @@ class MediaController extends Controller
         $response->header('Content-Type', (isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) ? 'application/json' : 'text/plain');
 
         return $response;
+    }
+
+    public function uploadAndBind()
+    {
+        return $this->upload(true);
     }
 
     public function meta($id)

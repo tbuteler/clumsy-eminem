@@ -11,18 +11,6 @@ class MediaAssociation extends Eloquent
 
     public $timestamps = false;
 
-    public static function boot()
-    {
-        parent::boot();
-
-        self::creating(function (Eloquent $model) {
-            $associatedModel = with(new $model->media_association_type)->find($model->media_association_id);
-            if (method_exists($associatedModel, 'onMediaAssociation')) {
-                $associatedModel->onMediaAssociation(Media::find($model->media_id), $model->position);
-            }
-        });
-    }
-
     public function getMeta($key)
     {
         return array_get($this->meta, $key);

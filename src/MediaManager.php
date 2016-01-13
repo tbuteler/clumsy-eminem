@@ -69,6 +69,16 @@ class MediaManager
             'media_meta'       => null,
             'show_comments'    => true,
             'comments'         => null,
+            'url'              => route('eminem.upload'),
+            'meta_url'         => route('eminem.save-meta'),
+            'view_bind'        => 'clumsy/eminem::media-bind',
+            'view_media_item'  => 'clumsy/eminem::media-item',
+            'view_media_box'   => 'clumsy/eminem::media-box',
+            'view_media_modal' => 'clumsy/eminem::media-modal',
+            'box_assets'       => [
+                'media-management.css',
+                'media-management.js',
+            ],
         ];
     }
 
@@ -147,19 +157,17 @@ class MediaManager
         return $response;
     }
 
-    public function mediaBox(Eloquent $model, $position, $options = [])
+    public function mediaBox(Eloquent $model, $position)
     {
         $slot = self::getSlot($model, $position);
         extract($slot);
 
-        $options = array_merge([
-            'url'      => route('eminem.upload'),
-            'meta_url' => route('eminem.save-meta'),
-        ], $options);
-        extract($options);
+        $association_id = $model->getKey();
 
-        Asset::enqueue(['media-management.css', 'media-management.js'], 30);
-        Asset::json('eminem', ['boxes' => [[$id, $allow_multiple, Crypt::encrypt("{$association_type}|{$position}")]]]);
+        Asset::enqueue($box_assets, 30);
+        Asset::json('eminem', ['boxes' => [
+            [$id, $allow_multiple, Crypt::encrypt("{$association_type}|{$association_id}|{$position}")]]
+        ]);
         Asset::json('eminem', [
             'meta_url'      => $meta_url,
             'general_error' => trans('clumsy/eminem::all.errors.general')
@@ -201,15 +209,15 @@ class MediaManager
             $comments = '<ul><li><small>'.implode('</small></li><li><small>', $comments).'</small></li></ul>';
         }
 
-        $output .= view('clumsy/eminem::media-box', compact('id', 'label', 'media', 'slot', 'comments', 'url'))->render();
+        $output .= view($view_media_box, compact('id', 'label', 'media', 'slot', 'comments', 'url'))->render();
 
-        Event::listen('Print footer scripts', function () use ($id, $label, $media, $meta) {
+        Event::listen('Print footer scripts', function () use ($id, $label, $media, $meta, $view_media_modal) {
 
             if (!$media) {
                 $media = collect();
             }
 
-            return view('clumsy/eminem::media-modal', compact('id', 'label', 'media', 'meta'));
+            return view($view_media_modal, compact('id', 'label', 'media', 'meta'));
         });
 
         return $output;
