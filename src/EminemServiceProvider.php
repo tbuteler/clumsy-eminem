@@ -4,7 +4,7 @@ namespace Clumsy\Eminem;
 
 use Illuminate\Support\ServiceProvider;
 use Clumsy\Assets\Facade as Asset;
-use Clumsy\Eminem\Media;
+use Clumsy\Eminem\Models\Media;
 
 class EminemServiceProvider extends ServiceProvider
 {
@@ -113,7 +113,7 @@ class EminemServiceProvider extends ServiceProvider
                 $this->app['router']->pattern('eminemMedia', '.+'); // Allows media path to have forward slashes
 
                 $this->app['router']->bind('eminemMedia', function ($value) {
-                    return MediaManager::media()->where('path', $value)->first();
+                    return $this->app['eminem']->media()->where('path', $value)->first();
                 });
 
                 $this->app['router']->get('eminem/output/{eminemMedia}', [
