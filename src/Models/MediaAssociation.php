@@ -3,7 +3,6 @@
 namespace Clumsy\Eminem\Models;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
-use Clumsy\Eminem\Models\Media;
 
 class MediaAssociation extends Eloquent
 {
