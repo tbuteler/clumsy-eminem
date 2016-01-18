@@ -12,10 +12,16 @@
             </div>
             @endforeach
         @endif
-        <p>
-            <strong>{{ trans('clumsy/eminem::all.item.path') }}:</strong> <a target="_blank" href="{{ $media }}">{{ $media }}</a><br>
-            <strong>{{ trans('clumsy/eminem::all.item.mime') }}:</strong> {{ $media->mime_type }}
-        </p>
+        <div class="media-item-details">
+            <p class="media-item-detail-block">
+                <strong class="details-heading details-heading-filename">{{ trans('clumsy/eminem::all.item.filename') }}:</strong>
+                <a class="details-value details-value-filename" target="_blank" href="{{ $media }}">{{ $media->name_and_extension }}</a>
+            </p>
+            <p class="media-item-detail-block">
+                <strong class="details-heading details-heading-mime">{{ trans('clumsy/eminem::all.item.mime') }}:</strong>
+                <span class="details-value details-value-mime">{{ $media->mime_type }}</span>
+            </p>
+        </div>
 
         <button type="button" class="media-unbind btn btn-danger" data-id="{{ $media->bindId }}">{{ trans('clumsy/eminem::all.item.remove') }}</button>
         @if(isset($meta) && $meta != null)
