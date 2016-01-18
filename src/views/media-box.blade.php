@@ -3,17 +3,19 @@
     @if (count($comments))
         <a tabindex="0" role="button" data-toggle="popover" data-container="body" data-trigger="focus" title="{{ $label }}" data-html="true" data-content="{!! $comments !!}" class="fileupload-comments glyphicon glyphicon-info-sign"></a>
     @endif
-    <div id="{{ $id }}" class="fileupload thumbnail {{ $media && !$media->isEmpty() ? '' : 'empty' }}">
+    <div id="{{ $id }}" data-count="{{ $media ? $media->count() : 0 }}" class="fileupload thumbnail {{ $preview ? "preview-{$preview}" : '' }} {{ $media && !$media->isEmpty() ? '' : 'empty' }}">
         <div class="fileupload-wrapper">
 
             <div class="progress progress-striped active">
                 <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
 
-            @if ($media)
+            @if ($media && $preview)
+                {!! $preview === 'name' ? '<ol>' : '' !!}
                 @foreach ($media as $m)
-                    @include('clumsy/eminem::media-image', ['media' => $m])
+                    @include("clumsy/eminem::media-{$preview}", ['media' => $m])
                 @endforeach
+                {!! $preview === 'name' ? '</ol>' : '' !!}
             @endif
 
             <div class="placeholders">

@@ -69,6 +69,7 @@ class MediaManager
             'media_meta'       => null,
             'show_comments'    => true,
             'comments'         => null,
+            'preview'          => 'image',
             'url'              => route('eminem.upload'),
             'meta_url'         => route('eminem.save-meta'),
             'view_bind'        => 'clumsy/eminem::media-bind',
@@ -165,13 +166,17 @@ class MediaManager
         $association_id = $model->getKey();
 
         Asset::enqueue($box_assets, 30);
-        Asset::json('eminem', ['boxes' => [
-            [$id, $allow_multiple, Crypt::encrypt("{$association_type}|{$association_id}|{$position}")]]
-        ]);
         Asset::json('eminem', [
-            'meta_url'      => $meta_url,
-            'general_error' => trans('clumsy/eminem::all.errors.general')
-        ], true);
+            'boxes' => [
+                $id => [
+                    'id' => $id,
+                    'association' => Crypt::encrypt("{$association_type}|{$association_id}|{$position}"),
+                    'allowMultiple' => $allow_multiple,
+                ],
+            ],
+            'meta_url' => $meta_url,
+            'general_error' => trans('clumsy/eminem::all.errors.general'),
+        ]);
 
         $output = '';
 
@@ -209,7 +214,7 @@ class MediaManager
             $comments = '<ul><li><small>'.implode('</small></li><li><small>', $comments).'</small></li></ul>';
         }
 
-        $output .= view($view_media_box, compact('id', 'label', 'media', 'slot', 'comments', 'url'))->render();
+        $output .= view($view_media_box, compact('id', 'label', 'media', 'slot', 'preview', 'comments', 'url'))->render();
 
         Event::listen('Print footer scripts', function () use ($id, $label, $media, $meta, $view_media_modal) {
 

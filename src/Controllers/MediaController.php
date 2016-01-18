@@ -48,6 +48,7 @@ class MediaController extends Controller
             $mediaId = $media->model->id;
             $src = $media->model->url();
             $preview = $media->model->previewURL();
+            $filename = $media->model->name_and_extension;
 
             $input .= view($view_bind, [
                 'mediaId'       => $mediaId,
@@ -59,7 +60,7 @@ class MediaController extends Controller
             $html_data['media'] = $media->model;
             $html = view($view_media_item, $html_data)->render();
 
-            $results[] = compact('mediaId', 'src', 'preview', 'status', 'input', 'html');
+            $results[] = compact('mediaId', 'src', 'filename', 'preview', 'status', 'input', 'html');
         }
 
         event('eminem.uploaded', array($results));

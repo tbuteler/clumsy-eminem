@@ -10,6 +10,12 @@
 
         this.options = $.extend({}, $.fn[pluginName].defaults, options);
 
+        if (this.$el.hasClass('preview-image')) {
+            this.options.preview = 'image';
+        } else if (this.$el.hasClass('preview-name')) {
+            this.options.preview = 'name';
+        }
+
         this.init();
     }
 
@@ -21,7 +27,8 @@
                 id = this.$el.attr('id'),
                 $box = this.$el,
                 $modal = $('#'+id+'-modal'),
-                $dropzone = $modal.find('.drag-and-drop');
+                $dropzone = $modal.find('.drag-and-drop'),
+                previewElement = this._previewElement();
 
             $box.closest('.fileupload-group').find('input').fileupload({
                 dataType: 'json',
@@ -38,10 +45,7 @@
                     }
                 ],
                 submit: function(e, data) {
-                    $box.removeClass('dragover').find('img').remove();
-                    $box.find('.placeholders').hide();
-                    $box.find('.progress').show();
-                    $box.removeClass('with-error');
+                    $box.removeClass('dragover with-error empty').addClass('uploading').find(previewElement).remove();
                 },
                 progressall: function (e, data) {
                     var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -51,29 +55,39 @@
                     );
                 },
                 done: function(e, data) {
-                    $box.find('.progress').hide();
-                    if (options.allowMultiple) {
-                        $box.html($box.data('raw'));
-                    }
+                    $box.removeClass('uploading');
+                    $box.html(options.allowMultiple ? $box.data('raw') : '');
                     $.each(data.result.files, function (index, file) {
-                        if (file.status === 'error')
-                        {
+                        if (file.status === 'error') {
                             alert(file.message);
                             $box.addClass('with-error');
                             return true;
                         }
-                        $('<img/>')
-                            .attr('src', file.preview)
-                            .attr('data-src', file.src)
-                            .attr('data-media-id', file.media_id)
-                            .appendTo($box);
-                        $box.data('raw', $box.html());
+                        if (options.preview === 'image') {
+                            $('<img/>')
+                                .attr('src', file.preview)
+                                .attr('data-src', file.src)
+                                .attr('data-media-id', file.mediaId)
+                                .appendTo($box);
+                        } else if (options.preview === 'name') {
+                            if (!$('ol', $box).length) {
+                                $('<ol></ol>').appendTo($box);
+                            }
+                            $('<li></li>')
+                                .attr('data-src', file.src)
+                                .attr('data-media-id', file.mediaId)
+                                .text(file.filename)
+                                .appendTo($('ol', $box));
+                        }
+                        $box.mediaBox('snapshot');
                         $box.closest('form').append(file.input);
                         if (options.allowMultiple) {
                             $modal.find('.current-media').append(file.html);
+                            $box.mediaBox('increment');
                         }
                         else {
                             $modal.find('.current-media').html(file.html);
+                            $box.mediaBox('setCount', 1);
                         }
                         $box.mediaBox('updateModal');
                     });
@@ -134,7 +148,9 @@
 
             this.$el.find('.fileupload-wrapper').hide();
             this._raw();
-            this._updateGrid();
+            if (this.options.preview === 'image') {
+                this._updateGrid();
+            }
             this.$el.find('.fileupload-wrapper').fadeIn('fast');
         },
 
@@ -145,33 +161,25 @@
             this._raw();
 
             // Remove images from media box using src attribute
-            this.$el.find('img').each(function(i,el){
-                if ($(el).data('src') === data.src) {
-                    $box.trigger("removed.mediaBox", [{
-                        media_id: $(el).attr('data-media-id')
-                    }]);
-                    $(el).remove();
-                    return false;
-                }
-            });
+            if (this.options.preview) {
+                this.$el.find(this._previewElement()).each(function(i,el){
+                    if ($(el).data('src') === data.src) {
+                        $box.trigger("removed.mediaBox", [{
+                            media_id: $(el).attr('data-media-id')
+                        }]);
+                        $(el).remove();
+                        return false;
+                    }
+                });
+            }
 
             // Remove images that would be added on save
             $box.closest('form').find('input[data-media-id="'+data.mediaId+'"]').remove();
 
-            this._store();
+            this.decrement();
+            this.snapshot();
             this.checkEmpty();
             this.update();
-        },
-
-        checkEmpty: function() {
-            if (!this.$el.find('img').length) {
-                this.$el.addClass('empty');
-                this.$el.find('.placeholders').show();
-            }
-            else {
-                this.$el.removeClass('empty');
-                this.$el.find('.placeholders').hide();
-            }
         },
 
         updateModal: function() {
@@ -188,15 +196,46 @@
             }
         },
 
-        _store: function() {
+        getCount: function() {
+            return parseInt(this.$el.data('count'));
+        },
 
+        setCount: function(count) {
+            return this.$el.data('count', count);
+        },
+
+        increment: function() {
+            this.setCount(this.getCount()+1);
+        },
+
+        decrement: function() {
+            this.setCount(this.getCount()-1);
+        },
+
+        isEmpty: function() {
+            return this.getCount() === 0;
+        },
+
+        checkEmpty: function() {
+            if (this.isEmpty()) {
+                this.$el.addClass('empty');
+            }
+            else {
+                this.$el.removeClass('empty');
+            }
+        },
+
+        snapshot: function() {
             if (this.options.allowMultiple) {
                 this.$el.data('raw', this.$el.html());
             }
         },
 
-        _raw: function() {
+        _previewElement: function() {
+            return this.options.preview === 'image' ? 'img' : 'li';
+        },
 
+        _raw: function() {
             if (this.options.allowMultiple) {
                 this.$el.html(this.$el.data('raw'));
             }
@@ -257,6 +296,7 @@
 
     $.fn[pluginName].defaults = {
         allowMultiple: false,
+        preview: false
     };
 
 })(jQuery, window, document);
@@ -265,12 +305,13 @@ $(function() {
 
     if (typeof handover !== 'undefined' && typeof handover.eminem !== 'undefined') {
 
-        $(handover.eminem.boxes).each(function(i, media){
-            $('#'+media[0]).mediaBox({
-                allowMultiple: media[1],
-                association: media[2]
+        for (var slot in handover.eminem.boxes) {
+            var media = handover.eminem.boxes[slot];
+            $('#'+media.id).mediaBox({
+                allowMultiple: media.allowMultiple,
+                association: media.association
             });
-        });
+        }
 
         $(document).on('drop dragover', function(e) {
             e.preventDefault();
