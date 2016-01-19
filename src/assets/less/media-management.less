@@ -114,6 +114,7 @@
 }
 
 .fileupload-group {
+    position: relative;
 
     .fileupload-comments {
         top: 2px;
@@ -123,7 +124,11 @@
     }
 
     input {
-        display: none;
+        // Hide input without using "display: none" or "visibility: hidden",
+        // otherwise it won't trigger dynamically
+        position: absolute;
+        height: 0;
+        width: 0;
     }
 }
 
