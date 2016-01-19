@@ -28,7 +28,8 @@
                 $box = this.$el,
                 $modal = $('#'+id+'-modal'),
                 $dropzone = $modal.find('.drag-and-drop'),
-                previewElement = this._previewElement();
+                previewElement = this._previewElement(),
+                dragenterElement;
 
             $box.closest('.fileupload-group').find('input').fileupload({
                 dataType: 'json',
@@ -59,8 +60,8 @@
                     $box.html(options.allowMultiple ? $box.data('raw') : '');
                     $.each(data.result.files, function (index, file) {
                         if (file.status === 'error') {
-                            alert(file.message);
                             $box.addClass('with-error');
+                            alert(file.message);
                             return true;
                         }
                         if (options.preview === 'image') {
@@ -123,11 +124,14 @@
             });
 
             $box.add($dropzone)
-                .on('dragover', function(e) {
+                .on('dragenter', function(e) {
+                    dragenterElement = event.target;
                     $(this).addClass('dragover');
                 })
                 .on('dragleave drop', function(e) {
-                    $(this).removeClass('dragover');
+                    if (dragenterElement === event.target) {
+                        $(this).removeClass('dragover');
+                    }
                 });
 
             $dropzone.find('button').click(function(e){
