@@ -43,6 +43,7 @@ class MediaController extends Controller
 
             if ($bind) {
                 $media->bind($slot);
+                $media->model->bindId = $media->association->id;
             }
 
             $mediaId = $media->model->id;
