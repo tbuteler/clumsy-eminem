@@ -4,8 +4,9 @@ namespace Clumsy\Eminem\Models;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\File as Filesystem;
-use Symfony\Component\HttpFoundation\File\File;
 use Intervention\Image\Facades\Image;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
 class Media extends Eloquent
 {
@@ -40,7 +41,13 @@ class Media extends Eloquent
 
     protected function baseFile()
     {
-        return new File($this->filePath());
+        try {
+            $file = new File($this->filePath());
+        } catch (FileNotFoundException $e) {
+            $file = new File(dirname(__DIR__).'/assets/img/placeholder.gif');
+        }
+
+        return $file;
     }
 
     protected function makeFile()
