@@ -45,6 +45,14 @@ class EminemServiceProvider extends ServiceProvider
         ], 'config');
 
         $this->publishes([
+            __DIR__.'/lang' => resource_path('lang/vendor/clumsy/eminem'),
+        ], 'translations');
+
+        $this->publishes([
+            __DIR__.'/views' => resource_path('views/vendor/clumsy/eminem'),
+        ], 'views');
+
+        $this->publishes([
             __DIR__.'/../public' => public_path('vendor/clumsy/eminem'),
         ], 'public');
 
