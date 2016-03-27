@@ -69,7 +69,7 @@ class MediaController extends Controller
         $response = response(['files' => $results]);
 
         $response->header('Vary', 'Accept');
-        $response->header('Content-Type', (isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) ? 'application/json' : 'text/plain');
+        $response->header('Content-Type', request()->accepts('application/json') ? 'application/json' : 'text/plain');
 
         return $response;
     }
