@@ -51,11 +51,13 @@ class MediaController extends Controller
             $preview = $media->model->previewURL();
             $filename = $media->model->name_and_extension;
 
-            $input .= view($view_bind, [
-                'mediaId'       => $mediaId,
-                'position'      => $position,
-                'allowMultiple' => $allow_multiple
-            ]);
+            if (!$bind) {
+                $input .= view($view_bind, [
+                    'mediaId'       => $mediaId,
+                    'position'      => $position,
+                    'allowMultiple' => $allow_multiple
+                ]);
+            }
 
             $html_data = [];
             $html_data['media'] = $media->model;

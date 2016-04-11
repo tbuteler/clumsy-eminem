@@ -28,6 +28,7 @@ trait Mediable
 
             if (request()->has('media_bind')) {
                 foreach (request()->get('media_bind') as $media_id => $attributes) {
+
                     $media = MediaManager::media()->find($media_id);
 
                     if ($media) {
@@ -49,6 +50,9 @@ trait Mediable
                     MediaAssociation::destroy($bind_id);
                 }
             }
+
+            // Remove our indexes from the request, in case multiple saves are made in the same lifecycle
+            request()->replace(request()->except('media_bind', 'media_unbind'));
         });
     }
 
