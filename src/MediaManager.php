@@ -111,7 +111,7 @@ class MediaManager
                 $slots[$slot['position']] = array_merge(
                     $this->slotDefaults(),
                     $defaults,
-                    ['id' => $slot['position']],
+                    ['id' => str_slug(class_basename($model)).'-'.$slot['position']],
                     $slot
                 );
             }
@@ -122,7 +122,7 @@ class MediaManager
         $slots[$defined['position']] = array_merge(
             $this->slotDefaults(),
             $defaults,
-            ['id' => $defined['position']],
+            ['id' => str_slug(class_basename($model)).'-'.$defined['position']],
             $defined
         );
 
