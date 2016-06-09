@@ -3,7 +3,6 @@
 namespace Clumsy\Eminem;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File as Filesystem;
 use Clumsy\Assets\Facade as Asset;
@@ -165,12 +164,12 @@ class MediaManager
 
         $association_id = $model->getKey();
 
-        Asset::enqueue($box_assets, 30);
+        Asset::enqueue($box_assets, 15);
         Asset::json('eminem', [
             'boxes' => [
                 $id => [
                     'id' => $id,
-                    'association' => Crypt::encrypt("{$association_type}|{$association_id}|{$position}"),
+                    'association'   => encrypt("{$association_type}|{$association_id}|{$position}"),
                     'allowMultiple' => $allow_multiple,
                 ],
             ],

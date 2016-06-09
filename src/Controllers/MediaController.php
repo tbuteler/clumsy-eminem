@@ -3,7 +3,6 @@
 namespace Clumsy\Eminem\Controllers;
 
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Crypt;
 use Clumsy\Eminem\Models\Media;
 use Clumsy\Eminem\Models\MediaAssociation;
 use Clumsy\Eminem\Facade as MediaManager;
@@ -13,7 +12,7 @@ class MediaController extends Controller
 {
     public function upload($bind = false)
     {
-        $association = Crypt::decrypt(request()->get('association'));
+        $association = decrypt(request()->get('association'));
         list($model, $association_id, $position) = explode('|', $association);
 
         if (!$slot = MediaManager::getSlot($model, $position)) {
