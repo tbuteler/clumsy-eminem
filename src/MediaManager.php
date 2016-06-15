@@ -2,12 +2,13 @@
 
 namespace Clumsy\Eminem;
 
-use Illuminate\Database\Eloquent\Model as Eloquent;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\File as Filesystem;
 use Clumsy\Assets\Facade as Asset;
 use Clumsy\Eminem\File\MediaFile;
 use Clumsy\Eminem\Models\Media;
+use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\File as Filesystem;
 
 class MediaManager
 {
@@ -24,7 +25,7 @@ class MediaManager
 
     protected function hasMultipleSlots($array)
     {
-        return (bool) count(array_filter(array_keys($array), 'is_string'));
+        return Arr::isAssoc($array);
     }
 
     public function guessExtension($path)
