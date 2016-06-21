@@ -16,6 +16,20 @@ class Media extends Eloquent
 
     protected $file = null;
 
+    /**
+     * History of name and arguments of calls performed on image
+     *
+     * @var array
+     */
+    public $calls = [];
+
+    /**
+     * Additional properties included in checksum
+     *
+     * @var array
+     */
+    public $properties = [];
+
     protected static $image_mimes = [
         'jpeg',
         'jpg',
@@ -24,19 +38,27 @@ class Media extends Eloquent
         'bmp',
     ];
 
-    public function basePath($path = null)
-    {
-        return $this->isRouted() ? storage_path('eminem/'.$path) : public_path($path);
-    }
-
     public function baseFolder()
     {
         return config("clumsy.eminem.folder");
     }
 
-    public function filePath()
+    public function basePath($path = null)
     {
-        return $this->basePath($this->path);
+        return $this->isRouted() ? storage_path('eminem/'.$path) : public_path($path);
+    }
+
+    public function cachePath($name)
+    {
+        $parts = array_slice(str_split($name, 2), 0, 2);
+        return $this->baseFolder().'/cache/'.implode('/', $parts).'/'.$name;
+    }
+
+    public function filePath($path = null)
+    {
+        $path = $path ?: $this->path;
+
+        return $this->basePath($path);
     }
 
     protected function baseFile()
@@ -104,6 +126,32 @@ class Media extends Eloquent
     {
         if ($this->isExternal()) {
             return $this->path;
+        }
+
+        if ($this->hasCalls()) {
+
+            $this->setProperty('modified', filemtime($this->filePath()));
+
+            $key = $this->checksum();
+            $name = $key.".{$this->extension}";
+            $path = $this->cachePath($name);
+            $filePath = $this->basePath($path);
+
+            // Check if image was saved before
+            if (!Filesystem::exists($filePath)) {
+
+                // Manipulated image
+                $this->process();
+
+                // Save to cache folder
+                if (!Filesystem::exists(dirname($filePath))) {
+                    Filesystem::makeDirectory(dirname($filePath), 0775, true, true);
+                }
+
+                $this->file()->save($filePath);
+            }
+
+            $this->path = $path;
         }
 
         return $this->isRouted() ? $this->routedURL() : $this->publicURL();
@@ -240,6 +288,165 @@ class Media extends Eloquent
         }
 
         return null;
+    }
+
+    public function maxDimension($dimension, $value)
+    {
+        $width = $dimension === 'width' ? $value : null;
+        $height = $dimension === 'height' ? $value : null;
+
+        $this->resize($width, $height, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+
+        return $this;
+    }
+
+    public function maxHeight($height)
+    {
+        return $this->maxDimension('height', $height);
+    }
+
+    public function maxWidth($width)
+    {
+        return $this->maxDimension('width', $width);
+    }
+
+    /**
+     * Set custom property to be included in checksum
+     *
+     * @param mixed $key
+     * @param mixed $value
+     * @return Clumsy\Eminem\Models\Media
+     */
+    public function setProperty($key, $value)
+    {
+        $this->properties[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Returns checksum of current image state
+     *
+     * @return string
+     */
+    public function checksum()
+    {
+        $properties = serialize($this->properties);
+        $calls = serialize($this->getSanitizedCalls());
+
+        return md5($properties.$calls);
+    }
+
+    /**
+     * Register static call for later use
+     *
+     * @param  string $name
+     * @param  array  $arguments
+     * @return void
+     */
+    protected function registerCall($name, $arguments)
+    {
+        $this->calls[] = ['name' => $name, 'arguments' => $arguments];
+    }
+
+    /**
+     * Return unprocessed calls
+     *
+     * @return array
+     */
+    protected function getCalls()
+    {
+        return $this->calls;
+    }
+
+    /**
+     * Check if image was manipulated
+     *
+     * @return bool
+     */
+    protected function hasCalls()
+    {
+        return count($this->getCalls()) > 0;
+    }
+
+    /**
+     * Replace Closures in arguments with SerializableClosure
+     *
+     * @return array
+     */
+    protected function getSanitizedCalls()
+    {
+        $calls = $this->getCalls();
+
+        foreach ($calls as $i => $call) {
+            foreach ($call['arguments'] as $j => $argument) {
+                if (is_a($argument, 'Closure')) {
+                    $calls[$i]['arguments'][$j] = $this->buildSerializableClosure($argument);
+                }
+            }
+        }
+
+        return $calls;
+    }
+
+    /**
+     * Build SerializableClosure from Closure
+     *
+     * @param  Closure $closure
+     * @return Jeremeamia\SuperClosure\SerializableClosure|SuperClosure\SerializableClosure
+     */
+    protected function buildSerializableClosure(\Closure $closure)
+    {
+        switch (true) {
+            case class_exists('SuperClosure\\SerializableClosure'):
+                return new \SuperClosure\SerializableClosure($closure);
+
+            default:
+                return new \Jeremeamia\SuperClosure\SerializableClosure($closure);
+        }
+    }
+
+    /**
+     * Process call on current image
+     *
+     * @param  array $call
+     * @return void
+     */
+    protected function processCall($call)
+    {
+        $this->file = call_user_func_array([$this->file(), $call['name']], $call['arguments']);
+    }
+
+    /**
+     * Process all saved image calls
+     *
+     * @return Clumsy\Eminem\Models\Media
+     */
+    public function process()
+    {
+        // process calls on image
+        foreach ($this->getCalls() as $call) {
+            $this->processCall($call);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Magic method to capture action calls
+     *
+     * @param  String $name
+     * @param  Array $arguments
+     * @return Clumsy\Eminem\Models\Media
+     */
+    public function __call($name, $arguments)
+    {
+        $this->registerCall($name, $arguments);
+
+        return $this;
     }
 
     public function __toString()
