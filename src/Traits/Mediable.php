@@ -100,6 +100,11 @@ trait Mediable
         return null;
     }
 
+    public function firstMedia($position = null, $placeholder = true)
+    {
+        return $this->getMedia($position, 'all', $placeholder)->first();
+    }
+
     public function countMedia($position = null)
     {
         return count($this->media($position, 'all', false));
