@@ -4,8 +4,8 @@ namespace Clumsy\Eminem\Models;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\File as Filesystem;
+use Intervention\Image\Constraint;
 use Intervention\Image\Facades\Image;
-use Intervention\Image\Image as InterventionImage;
 use SuperClosure\Serializer;
 use SuperClosure\Analyzer\TokenAnalyzer;
 use Symfony\Component\HttpFoundation\File\File;
@@ -357,7 +357,7 @@ class Media extends Eloquent
         $width = $dimension === 'width' ? $value : null;
         $height = $dimension === 'height' ? $value : null;
 
-        $this->resize($width, $height, function ($constraint) {
+        $this->resize($width, $height, function (Constraint $constraint) {
             $constraint->aspectRatio();
             $constraint->upsize();
         });
