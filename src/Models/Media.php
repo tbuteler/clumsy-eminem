@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\File as Filesystem;
 use Intervention\Image\Facades\Image;
 use Intervention\Image\Image as InterventionImage;
+use SuperClosure\Serializer;
+use SuperClosure\Analyzer\TokenAnalyzer;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
@@ -394,9 +396,8 @@ class Media extends Eloquent
      */
     public function checksum()
     {
-        $properties = serialize($this->properties);
-        $calls = serialize($this->getSanitizedCalls());
-
+        $properties = json_encode($this->properties, true);
+        $calls = json_encode($this->getSanitizedCalls(), true);
         return md5($properties.$calls);
     }
 
@@ -460,13 +461,7 @@ class Media extends Eloquent
      */
     protected function buildSerializableClosure(\Closure $closure)
     {
-        switch (true) {
-            case class_exists('SuperClosure\\SerializableClosure'):
-                return new \SuperClosure\SerializableClosure($closure);
-
-            default:
-                return new \Jeremeamia\SuperClosure\SerializableClosure($closure);
-        }
+        return with(new Serializer(new TokenAnalyzer()))->serialize($closure);
     }
 
     /**
