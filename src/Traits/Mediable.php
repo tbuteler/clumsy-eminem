@@ -60,6 +60,7 @@ trait Mediable
     {
         $media = MediaManager::media();
         $media->path = $this->mediaPlaceholder($position);
+        $media->setRelation('pivot', $this->media()->newPivot());
         return $media;
     }
 
