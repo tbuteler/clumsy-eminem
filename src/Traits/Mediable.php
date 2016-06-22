@@ -107,12 +107,12 @@ trait Mediable
 
     public function countMedia($position = null)
     {
-        return count($this->media($position, 'all', false));
+        return count($this->getMedia($position, 'all', false));
     }
 
     public function hasMedia($position = null)
     {
-        return (bool)$this->countMedia($position, 'all', false);
+        return (bool)$this->countMedia($position);
     }
 
     public function mediaMeta($position = null, $offset = 0)
