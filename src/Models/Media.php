@@ -5,6 +5,7 @@ namespace Clumsy\Eminem\Models;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\File as Filesystem;
 use Intervention\Image\Facades\Image;
+use Intervention\Image\Image as InterventionImage;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
@@ -15,6 +16,60 @@ class Media extends Eloquent
     protected $guarded = ['id'];
 
     protected $file = null;
+
+    /**
+     * Available image manipulation methods
+     *
+     * @var array
+     */
+    protected $manipulations = [
+        'blur',
+        'brightness',
+        'colorize',
+        'contrast',
+        'crop',
+        'encode',
+        'fill',
+        'filter',
+        'flip',
+        'fit',
+        'gamma',
+        'greyscale',
+        'heighten',
+        'insert',
+        'invert',
+        'limitColors',
+        'line',
+        'mask',
+        'opacity',
+        'orientate',
+        'pixel',
+        'pixelate',
+        'rectangle',
+        'reset',
+        'resize',
+        'resizeCanvas',
+        'rotate',
+        'sharpen',
+        'text',
+        'trim',
+        'widen',
+    ];
+
+    /**
+     * Available image property methods
+     *
+     * @var array
+     */
+    protected $imageProperties = [
+        'exif',
+        'filesize',
+        'height',
+        'iptc',
+        'mime',
+        'pickColor',
+        'width',
+    ];
 
     /**
      * History of name and arguments of calls performed on image
@@ -30,7 +85,12 @@ class Media extends Eloquent
      */
     public $properties = [];
 
-    protected static $image_mimes = [
+    /**
+     * Mime types which we will consider as image
+     *
+     * @var array
+     */
+    protected static $imageMimes = [
         'jpeg',
         'jpg',
         'png',
@@ -88,12 +148,12 @@ class Media extends Eloquent
 
     public function isImage()
     {
-        return in_array($this->extension, static::$image_mimes);
+        return in_array($this->extension, static::$imageMimes);
     }
 
     public function isExternal()
     {
-        return $this->path_type === 'external';
+        return $this->path_type === 'external' || starts_with($this->path, 'http');
     }
 
     public function isRouted()
@@ -124,7 +184,7 @@ class Media extends Eloquent
 
     public function url()
     {
-        if ($this->isExternal()) {
+        if ($this->isExternal() || !$this->path) {
             return $this->path;
         }
 
@@ -435,18 +495,29 @@ class Media extends Eloquent
         return $this;
     }
 
-    /**
-     * Magic method to capture action calls
-     *
-     * @param  String $name
-     * @param  Array $arguments
-     * @return Clumsy\Eminem\Models\Media
-     */
+    public function isManipulation($name)
+    {
+        return in_array($name, $this->manipulations);
+    }
+
+    public function isImageProperty($name)
+    {
+        return in_array($name, $this->imageProperties);
+    }
+
     public function __call($name, $arguments)
     {
-        $this->registerCall($name, $arguments);
+        if ($this->isManipulation($name)) {
 
-        return $this;
+            $this->registerCall($name, $arguments);
+            return $this;
+
+        } elseif ($this->isImageProperty($name)) {
+
+            return $this->file()->$name($arguments);
+        }
+
+        return parent::__call($name, $arguments);
     }
 
     public function __toString()

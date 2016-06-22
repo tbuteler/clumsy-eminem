@@ -165,7 +165,7 @@ class MediaManager
 
         $association_id = $model->getKey();
 
-        Asset::enqueue($box_assets, 15);
+        Asset::load($box_assets, 15);
         Asset::json('eminem', [
             'boxes' => [
                 $id => [
@@ -182,7 +182,7 @@ class MediaManager
 
         $media = false;
         if ($model->exists) {
-            $media = $model->allMedia($position);
+            $media = $model->media($position, 'all', false);
         }
 
         if (old('media_bind')) {

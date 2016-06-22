@@ -56,7 +56,14 @@ trait Mediable
         });
     }
 
-    public function media()
+    protected function emptyMediaObject($position = null)
+    {
+        $media = MediaManager::media();
+        $media->path = $this->mediaPlaceholder($position);
+        return $media;
+    }
+
+    public function attachments()
     {
         return $this->morphToMany(
             MediaManager::mediaModel(),
@@ -65,6 +72,63 @@ trait Mediable
             'media_association_id',
             'media_id'
         )->withPivot('position', 'meta', 'id as bindId');
+    }
+
+    public function media($position = null, $offset = 'all', $placeholder = true)
+    {
+        $media = $this->attachments;
+        if ($position) {
+            $media = $media->filter(function (Media $media) use ($position) {
+                return $media->pivot->position === $position;
+            })->values();
+        }
+        if ($offset === 'all') {
+            if ($media->isEmpty() && $placeholder) {
+                $media->push($this->emptyMediaObject($position));
+            }
+            return $media;
+        }
+
+        if ($media->offsetExists($offset)) {
+            $media->offsetGet($offset);
+        }
+
+        if ($placeholder) {
+            return $this->emptyMediaObject($position);
+        }
+
+        return null;
+    }
+
+    public function countMedia($position = null)
+    {
+        return count($this->media($position, 'all', false));
+    }
+
+    public function hasMedia($position = null)
+    {
+        return (bool)$this->countMedia($position, 'all', false);
+    }
+
+    public function mediaMeta($position = null, $offset = 0)
+    {
+        if ($this->hasMedia($position)) {
+            $media = $this->media($position, $offset);
+
+            if ($media) {
+                return json_decode($media->pivot->meta, true);
+            }
+        }
+    }
+
+    public function mediaPlaceholder($position = null)
+    {
+        return '';
+    }
+
+    public function onMediaAssociation(Media $media, $position)
+    {
+
     }
 
     public function uploadMediaUrl()
@@ -118,71 +182,5 @@ trait Mediable
     public function mediaBox($position)
     {
         return MediaManager::mediaBox($this, $position);
-    }
-
-    public function attachment($position = null, $offset = 0)
-    {
-        $media = $this->media;
-
-        if ($position) {
-            $media = $media->filter(function (Media $media) use ($position) {
-                return $media->pivot->position === $position;
-            })->values();
-        }
-
-        if ($offset === 'all') {
-            return $media;
-        }
-
-        return $media->offsetExists($offset) ? $media->offsetGet($offset) : null;
-    }
-
-    public function allMedia($position = null)
-    {
-        return $this->attachment($position, 'all');
-    }
-
-    public function countMedia($position = null)
-    {
-        return count($this->attachment($position, 'all'));
-    }
-
-    public function hasMedia($position = null)
-    {
-        return (bool)$this->countMedia($position);
-    }
-
-    public function mediaPath($position = null, $offset = 0)
-    {
-        if ($this->hasMedia($position)) {
-            $media = $this->attachment($position, $offset);
-
-            if ($media) {
-                return $media->url();
-            }
-        }
-
-        return $this->mediaPlaceholder($position);
-    }
-
-    public function mediaMeta($position = null, $offset = 0)
-    {
-        if ($this->hasMedia($position)) {
-            $media = $this->attachment($position, $offset);
-
-            if ($media) {
-                return json_decode($media->pivot->meta, true);
-            }
-        }
-    }
-
-    public function mediaPlaceholder($position = null)
-    {
-        return '';
-    }
-
-    public function onMediaAssociation(Media $media, $position)
-    {
-
     }
 }
