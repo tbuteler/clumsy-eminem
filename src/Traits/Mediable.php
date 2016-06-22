@@ -63,7 +63,7 @@ trait Mediable
         return $media;
     }
 
-    public function attachments()
+    public function media()
     {
         return $this->morphToMany(
             MediaManager::mediaModel(),
@@ -74,9 +74,9 @@ trait Mediable
         )->withPivot('position', 'meta', 'id as bindId');
     }
 
-    public function media($position = null, $offset = 'all', $placeholder = true)
+    public function getMedia($position = null, $offset = 'all', $placeholder = true)
     {
-        $media = $this->attachments;
+        $media = $this->media;
         if ($position) {
             $media = $media->filter(function (Media $media) use ($position) {
                 return $media->pivot->position === $position;

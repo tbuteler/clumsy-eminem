@@ -182,7 +182,7 @@ class MediaManager
 
         $media = false;
         if ($model->exists) {
-            $media = $model->media($position, 'all', false);
+            $media = $model->getMedia($position, 'all', false);
         }
 
         if (old('media_bind')) {
