@@ -12,7 +12,6 @@
     "require": {
         "laravel/framework": ">=5.1",
         "intervention/image": "2.*",
-        "intervention/imagecache": "2.*",
         "clumsy/assets": ">=0.7"
     },
     "autoload": {
