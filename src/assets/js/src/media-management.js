@@ -149,9 +149,9 @@
         },
 
         update: function() {
-
             this.$el.find('.fileupload-wrapper').hide();
             this._raw();
+            this.snapshot();
             if (this.options.preview === 'image') {
                 this._updateGrid();
             }
@@ -253,7 +253,7 @@
 
             // Reset plugin data, so it inits properly
             this.$el.removeData('plugin_photosetGrid').removeAttr('data-width');
-            this.$el.data('raw', this.$el.html());
+            this.snapshot();
             var count = this.$el.find('img').length,
                 columns = count,
                 layout = '';

@@ -48,7 +48,7 @@ class MediaController extends Controller
             $mediaId = $media->model->id;
             $src = $media->model->url();
             $preview = $media->model->previewURL();
-            $filename = $media->model->name_and_extension;
+            $filename = $media->filename;
 
             if (!$bind) {
                 $input .= view($view_bind, [

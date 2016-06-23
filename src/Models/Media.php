@@ -5,6 +5,7 @@ namespace Clumsy\Eminem\Models;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\File as Filesystem;
 use Intervention\Image\Constraint;
+use Intervention\Image\Exception\NotReadableException;
 use Intervention\Image\Facades\Image;
 use SuperClosure\Serializer;
 use SuperClosure\Analyzer\TokenAnalyzer;
@@ -134,9 +135,20 @@ class Media extends Eloquent
         return $file;
     }
 
+    protected function makeImage()
+    {
+        try {
+            $file = Image::make($this->filePath());
+        } catch (NotReadableException $e) {
+            $file = Image::make(dirname(__DIR__).'/assets/img/placeholder.gif');
+        }
+
+        return $file;
+    }
+
     protected function makeFile()
     {
-        $this->file = $this->isImage() ? Image::make($this->filePath()) : $this->baseFile();
+        $this->file = $this->isImage() ? $this->makeImage() : $this->baseFile();
     }
 
     public function file()
@@ -148,8 +160,22 @@ class Media extends Eloquent
         return $this->file;
     }
 
+    public function getFilename()
+    {
+        return $this->isImage() ? $this->file()->basename : $this->file()->getFilename();
+    }
+
+    public function getExtension()
+    {
+        if ($this->isExternal()) {
+            return Filesystem::extension($this->path);
+        }
+        return $this->baseFile()->guessExtension();
+    }
+
     public function isImage()
     {
+        // Don't rely on filename to guess image extensions -- use Symfony's File::guessExtension() instead
         return in_array($this->extension, static::$imageMimes);
     }
 
@@ -225,13 +251,13 @@ class Media extends Eloquent
             return $this->url();
         }
 
-        $placeholders = config('clumsy.eminem.placeholder-folder').'/';
-
-        if (file_exists(public_path("{$placeholders}{$this->extension}.png"))) {
-            return url("{$placeholders}{$this->extension}.png");
+        $placeholders = config('clumsy.eminem.placeholder-folder');
+        $extension = Filesystem::extension($this->getFilename());
+        if (Filesystem::exists(public_path("{$placeholders}/{$extension}.png"))) {
+            return url("{$placeholders}/{$extension}.png");
         }
 
-        return url("{$placeholders}unknown.png");
+        return url("{$placeholders}/unknown.png");
     }
 
     public function bind(array $options = [])
@@ -293,11 +319,7 @@ class Media extends Eloquent
 
     public function getExtensionAttribute()
     {
-        if ($this->isExternal()) {
-            return Filesystem::extension($this->path);
-        }
-
-        return $this->baseFile()->guessExtension();
+        return $this->getExtension();
     }
 
     public function getNameAttribute()
@@ -315,6 +337,11 @@ class Media extends Eloquent
         }
 
         return $name;
+    }
+
+    public function getFilenameAttribute()
+    {
+        return $this->getFilename();
     }
 
     public function getMeta($key)
@@ -413,6 +440,16 @@ class Media extends Eloquent
         $this->calls[] = ['name' => $name, 'arguments' => $arguments];
     }
 
+    protected function callIsManipulation($name)
+    {
+        return in_array($name, $this->manipulations);
+    }
+
+    protected function callIsImageProperty($name)
+    {
+        return in_array($name, $this->imageProperties);
+    }
+
     /**
      * Return unprocessed calls
      *
@@ -445,7 +482,7 @@ class Media extends Eloquent
         foreach ($calls as $i => $call) {
             foreach ($call['arguments'] as $j => $argument) {
                 if (is_a($argument, 'Closure')) {
-                    $calls[$i]['arguments'][$j] = $this->buildSerializableClosure($argument);
+                    $calls[$i]['arguments'][$j] = $this->serializeClosure($argument);
                 }
             }
         }
@@ -454,12 +491,12 @@ class Media extends Eloquent
     }
 
     /**
-     * Build SerializableClosure from Closure
+     * Serialize Closure
      *
      * @param  Closure $closure
-     * @return Jeremeamia\SuperClosure\SerializableClosure|SuperClosure\SerializableClosure
+     * @return string
      */
-    protected function buildSerializableClosure(\Closure $closure)
+    protected function serializeClosure(\Closure $closure)
     {
         return with(new Serializer(new TokenAnalyzer()))->serialize($closure);
     }
@@ -490,24 +527,14 @@ class Media extends Eloquent
         return $this;
     }
 
-    public function isManipulation($name)
-    {
-        return in_array($name, $this->manipulations);
-    }
-
-    public function isImageProperty($name)
-    {
-        return in_array($name, $this->imageProperties);
-    }
-
     public function __call($name, $arguments)
     {
-        if ($this->isManipulation($name)) {
+        if ($this->callIsManipulation($name)) {
 
             $this->registerCall($name, $arguments);
             return $this;
 
-        } elseif ($this->isImageProperty($name)) {
+        } elseif ($this->callIsImageProperty($name)) {
 
             return $this->file()->$name($arguments);
         }

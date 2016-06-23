@@ -15,7 +15,7 @@
         <div class="media-item-details">
             <p class="media-item-detail-block">
                 <strong class="details-heading details-heading-filename">{{ trans('clumsy/eminem::all.item.filename') }}:</strong>
-                <a class="details-value details-value-filename" target="_blank" href="{{ $media }}">{{ $media->name_and_extension }}</a>
+                <a class="details-value details-value-filename" target="_blank" href="{{ $media }}">{{ $media->filename }}</a>
             </p>
             <p class="media-item-detail-block">
                 <strong class="details-heading details-heading-mime">{{ trans('clumsy/eminem::all.item.mime') }}:</strong>
