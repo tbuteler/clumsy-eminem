@@ -153,7 +153,7 @@ class Media extends Eloquent
 
     public function file()
     {
-        if (!$this->file) {
+        if (!is_object($this->file)) {
             $this->makeFile();
         }
 
