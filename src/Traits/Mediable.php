@@ -16,44 +16,46 @@ trait Mediable
             if (isset($model->files)) {
                 unset($model->files);
             }
-            if (isset($model->media_bind)) {
+            if (isset($model->media_bind) || isset($model->media_unbind)) {
                 unset($model->media_bind);
-            }
-            if (isset($model->media_unbind)) {
                 unset($model->media_unbind);
+                if ($model->exists) {
+                    self::processRequestMediaBindings($model);
+                }
             }
         });
 
-        self::saved(function (Eloquent $model) {
-
-            if (request()->has('media_bind')) {
-                foreach (request()->get('media_bind') as $media_id => $attributes) {
-
-                    $media = MediaManager::media()->find($media_id);
-
-                    if ($media) {
-                        $options = array_merge(
-                            [
-                                'association_id'   => $model->id,
-                                'association_type' => get_class($model),
-                            ],
-                            $attributes
-                        );
-
-                        $media->bind($options);
-                    }
-                }
-            }
-
-            if (request()->has('media_unbind')) {
-                foreach (request()->get('media_unbind') as $bind_id) {
-                    MediaAssociation::destroy($bind_id);
-                }
-            }
-
-            // Remove our indexes from the request, in case multiple saves are made in the same lifecycle
-            request()->replace(request()->except('media_bind', 'media_unbind'));
+        self::created(function (Eloquent $model) {
+            self::processRequestMediaBindings($model);
         });
+    }
+
+    protected static function processRequestMediaBindings($model)
+    {
+        if (request()->has('media_bind')) {
+            foreach (request()->get('media_bind') as $media_id => $attributes) {
+
+                $media = MediaManager::media()->find($media_id);
+
+                if ($media) {
+                    $options = array_merge([
+                        'association_id'   => $model->id,
+                        'association_type' => get_class($model),
+                    ], $attributes);
+
+                    $media->bind($options);
+                }
+            }
+        }
+
+        if (request()->has('media_unbind')) {
+            foreach (request()->get('media_unbind') as $bind_id) {
+                MediaAssociation::destroy($bind_id);
+            }
+        }
+
+        // Remove our indexes from the request, in case multiple saves are made in the same lifecycle
+        request()->replace(request()->except('media_bind', 'media_unbind'));
     }
 
     protected function emptyMediaObject($position = null)
