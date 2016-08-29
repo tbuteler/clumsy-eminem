@@ -30,7 +30,7 @@ trait Mediable
         });
     }
 
-    protected static function processRequestMediaBindings($model)
+    protected static function processRequestMediaBindings(Eloquent $model)
     {
         if (request()->has('media_bind')) {
             foreach (request()->get('media_bind') as $media_id => $attributes) {
