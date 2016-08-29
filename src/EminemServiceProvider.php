@@ -38,6 +38,8 @@ class EminemServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
         $this->loadTranslationsFrom(__DIR__.'/lang', 'clumsy/eminem');
 
         $this->publishes([
@@ -55,10 +57,6 @@ class EminemServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../public' => public_path('vendor/clumsy/eminem'),
         ], 'public');
-
-	    $this->publishes([
-	        __DIR__.'/../database/migrations' => database_path('migrations')
-	    ], 'migrations');
 
         $this->registerRoutes();
 
