@@ -10,7 +10,7 @@
     "tests"
   ],
   "dependencies": {
-    "jquery-file-upload": "~9.11.2",
+    "jquery-file-upload": "~9.12.5",
     "photoset-grid": "~1.0.0"
   }
 }
