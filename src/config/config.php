@@ -76,7 +76,9 @@ return [
 
     'output-prefix' => '',
 
-    'output-middleware' => [],
+    'output-middleware' => [
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+    ],
 
     /*
      |--------------------------------------------------------------------------

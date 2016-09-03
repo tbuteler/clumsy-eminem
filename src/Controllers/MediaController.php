@@ -3,19 +3,26 @@
 namespace Clumsy\Eminem\Controllers;
 
 use Illuminate\Routing\Controller;
+use Clumsy\Eminem\MediaManager;
 use Clumsy\Eminem\Models\Media;
 use Clumsy\Eminem\Models\MediaAssociation;
-use Clumsy\Eminem\Facade as MediaManager;
 use Clumsy\Eminem\Exceptions\IllegalMediaSlotException;
 
 class MediaController extends Controller
 {
+    protected $eminem;
+
+    public function __construct(MediaManager $eminem)
+    {
+        $this->eminem = $eminem;
+    }
+
     public function upload($bind = false)
     {
         $association = decrypt(request()->get('association'));
         list($model, $association_id, $position) = explode('|', $association);
 
-        if (!$slot = MediaManager::getSlot($model, $position)) {
+        if (!$slot = $this->eminem->getSlot($model, $position)) {
             throw new IllegalMediaSlotException;
         }
 
@@ -29,7 +36,7 @@ class MediaController extends Controller
 
             $input = '';
 
-            $media = MediaManager::add($slot, $file, null);
+            $media = $this->eminem->add($slot, $file, null);
 
             if ($media->hasErrors()) {
                 $status = 'error';
@@ -94,5 +101,10 @@ class MediaController extends Controller
             'status' => 'error',
             'msg'    => trans('clumsy/eminem::all.errors.general')
         ];
+    }
+
+    public function outputMedia(Media $media)
+    {
+        return $this->eminem->response($media);
     }
 }

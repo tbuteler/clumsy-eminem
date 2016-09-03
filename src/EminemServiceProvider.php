@@ -4,7 +4,6 @@ namespace Clumsy\Eminem;
 
 use Illuminate\Support\ServiceProvider;
 use Clumsy\Assets\Facade as Asset;
-use Clumsy\Eminem\Models\Media;
 
 class EminemServiceProvider extends ServiceProvider
 {
@@ -27,7 +26,7 @@ class EminemServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/config/config.php', 'clumsy.eminem');
 
         $this->app->bind('eminem', function ($app) {
-			return new MediaManager;
+            return new MediaManager;
         });
     }
 
@@ -81,11 +80,11 @@ class EminemServiceProvider extends ServiceProvider
     public function registerRoutes()
     {
         /*
-		|--------------------------------------------------------------------------
-		| Uploading and editing
-		|--------------------------------------------------------------------------
-		|
-		*/
+        |--------------------------------------------------------------------------
+        | Uploading and editing
+        |--------------------------------------------------------------------------
+        |
+        */
 
         $this->app['router']->group([
                 'prefix'     => config('clumsy.eminem.input-prefix'),
@@ -105,11 +104,11 @@ class EminemServiceProvider extends ServiceProvider
         );
 
         /*
-		|--------------------------------------------------------------------------
-		| Processing and response
-		|--------------------------------------------------------------------------
-		|
-		*/
+        |--------------------------------------------------------------------------
+        | Processing and response
+        |--------------------------------------------------------------------------
+        |
+        */
 
         $this->app['router']->group([
                 'prefix'     => config('clumsy.eminem.output-prefix'),
@@ -123,10 +122,8 @@ class EminemServiceProvider extends ServiceProvider
                 });
 
                 $this->app['router']->get('eminem/output/{eminemMedia}', [
-                    'as' => 'eminem.media-route',
-                    function (Media $media) {
-                        return $this->app['eminem']->response($media);
-                    }
+                    'as'   => 'eminem.media-route',
+                    'uses' => 'Clumsy\Eminem\Controllers\MediaController@outputMedia',
                 ]);
             }
         );
