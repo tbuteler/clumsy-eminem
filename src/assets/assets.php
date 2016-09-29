@@ -7,11 +7,6 @@ return [
         'path'  => '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
     ],
 
-    'bootstrap' => [
-        'set'   => 'styles',
-        'path'  => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css',
-    ],
-
     'bootstrap.js' => [
         'set'   => 'footer',
         'path'  => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
@@ -21,8 +16,7 @@ return [
     'media-management.css' => [
         'set'    => 'styles',
         'path'   => 'vendor/clumsy/eminem/css/media-management.css',
-        'req'    => 'bootstrap',
-        'v'      => '0.12.0',
+        'v'      => '0.14.0',
         'elixir' => false,
     ],
 
@@ -30,7 +24,7 @@ return [
         'set'    => 'footer',
         'path'   => 'vendor/clumsy/eminem/js/media-management.min.js',
         'req'    => 'bootstrap.js',
-        'v'      => '0.12.0',
+        'v'      => '0.14.0',
         'elixir' => false,
     ],
 ];

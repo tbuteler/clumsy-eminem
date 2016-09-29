@@ -1,7 +1,7 @@
 <div class="form-group fileupload-group">
     <label for="{{ $id }}">{{ $label }}</label>
     @if (count($comments))
-        <a tabindex="0" role="button" data-toggle="popover" data-container="body" data-trigger="focus" title="{{ $label }}" data-html="true" data-content="{!! $comments !!}" class="fileupload-comments glyphicon glyphicon-info-sign"></a>
+        <a tabindex="0" role="button" data-toggle="popover" data-container="body" data-trigger="focus" title="{{ $label }}" data-html="true" data-content="{!! $comments !!}" class="fileupload-comments material-icons">&#xE88E;</a>
     @endif
     <div id="{{ $id }}" data-count="{{ $media ? $media->count() : 0 }}" class="fileupload thumbnail {{ $preview ? "preview-{$preview}" : '' }} {{ $media && !$media->isEmpty() ? '' : 'empty' }}">
         <div class="fileupload-wrapper">
@@ -19,14 +19,14 @@
             @endif
 
             <div class="placeholders">
-                <div class="idle glyphicon glyphicon-cloud-upload"></div>
-                <div class="error glyphicon glyphicon-exclamation-sign"></div>
+                <i class="idle material-icons">&#xE2C6;</i>
+                <i class="error material-icons">&#xE000;</i>
             </div>
 
         </div>
 
     </div>
 
-    <input id="{{ $id }}-input" type="file" name="files[]" data-url="{{ $url }}" {{ $slot['allow_multiple'] ? 'multiple' : ''}}>
+    <input tabindex="-1" id="{{ $id }}-input" type="file" name="files[]" data-url="{{ $url }}" {{ $slot['allow_multiple'] ? 'multiple' : ''}}>
 
 </div>

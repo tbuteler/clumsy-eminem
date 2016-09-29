@@ -24,23 +24,15 @@
         z-index: 1;
         width: 100%;
 
-        .error {
-            display: none;
-            color: #ff4500;
-        }
-
-        .glyphicon {
+        i {
             position: relative;
-        }
-
-        .glyphicon-cloud-upload {
             top: 74px;
-            font-size: 48px;
-        }
+            font-size: 60px;
 
-        .glyphicon-exclamation-sign {
-            top: 70px;
-            font-size: 55px;
+            &.error {
+                display: none;
+                color: #ff4500;
+            }
         }
     }
 
@@ -117,7 +109,9 @@
     position: relative;
 
     .fileupload-comments {
-        top: 2px;
+        position: relative;
+        top: 6px;
+        margin-top: -8px;
         color: #aaa;
         outline: 0;
         text-decoration: none;
@@ -169,7 +163,6 @@
             margin: 15px;
             padding: 15px;
             background: rgba(255,255,255,0.9);
-            border-radius: 5px;
             opacity: 0;
             filter: ~"alpha(opacity=0)";
             transition: opacity 0.2s ease-in-out;
@@ -203,7 +196,6 @@
     margin-top: 20px;
     padding-top: 30px;
     border: 3px dashed #e5e5e5;
-    border-radius: 20px;
     text-align: center;
 
     button {
@@ -235,10 +227,45 @@
 }
 
 .media-save-meta {
-    .glyphicon-refresh {
-        -webkit-animation:spin 4s linear infinite;
-        -moz-animation:spin 4s linear infinite;
-        animation:spin 4s linear infinite;
+
+    i {
+        display: none;
+        position: relative;
+        top: 3px;
+        font-size: 18px;
+        line-height: 10px;
+
+        &.meta-save-active {
+            display: inline-block;
+        }
+    }
+
+    .meta-save-loading {
+        -webkit-animation:spin 2s linear infinite;
+        -moz-animation:spin 2s linear infinite;
+        animation:spin 2s linear infinite;
+    }
+
+    &.loading {
+
+        .meta-save-loading {
+            display: inline-block;
+        }
+
+        .meta-save-active {
+            display: none;
+        }
+    }
+
+    &.success {
+
+        .meta-save-success {
+            display: inline-block;
+        }
+
+        .meta-save-active {
+            display: none;
+        }
     }
 }
 

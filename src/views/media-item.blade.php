@@ -27,9 +27,6 @@
         @if(isset($meta) && $meta != null)
             <button class="media-save-meta btn btn-success" data-id="{{ $media->bindId }}">
                 {{ trans('clumsy/eminem::all.item.save') }}
-                <i class="meta-save-active glyphicon glyphicon-pencil"></i>
-                <i class="meta-save-loading glyphicon glyphicon glyphicon-refresh" style="display:none;"></i>
-                <i class="meta-save-success glyphicon glyphicon-ok-sign" style="display:none;"></i>
             </button>
         </form>
         @endif

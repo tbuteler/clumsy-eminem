@@ -343,38 +343,26 @@ $(function() {
         $(document).on('submit', 'form.meta', function(event){
             event.preventDefault();
 
-            var $el = $(this);
-            var $btn = $(this).find('.media-save-meta');
-            $el.prop('disabled', true).siblings('button').prop('disabled', true);
+            var $el = $(this),
+                $btn = $('.media-save-meta', $el),
+                url = $el.attr('action'),
+                data = $el.serialize(),
+                timer;
 
-            var url = $el.attr('action');
-            var data = $el.serialize();
-
-            var $i_active = $el.find('.meta-save-active');
-            var $i_loading = $el.find('.meta-save-loading');
-            var $i_success = $el.find('.meta-save-success');
-
-            $i_active.hide();
-            $i_loading.show();
+            $btn.prop('disabled', true).removeClass('success').addClass('loading');
 
             $.post(url,data,function(data) {
-                    if (data.status == 'error') {
-                        alert(data.message);
-                    }
-                    else {
-                        $i_loading.fadeOut().promise().done(function(){
-                            $i_success.fadeIn('fast');
-                            $btn.prop('disabled',false);
-                            $btn.siblings('button').prop('disabled',false);
-                        });
-                        setTimeout(function(){
-                            $i_success.fadeOut('fast').promise().done(function(){
-                                $i_active.fadeIn('fast');
-                            });
-                        }, 1500);
-                    }
+                if (data.status == 'error') {
+                    alert(data.message);
                 }
-            );
+                else {
+                    $btn.prop('disabled', false).removeClass('loading').addClass('success');
+                    clearTimeout(timer);
+                    timer = setTimeout(function(){
+                        $btn.removeClass('success loading');
+                    }, 1500);
+                }
+            });
         });
 
         $('.fileupload-group [data-toggle="popover"]').popover();
