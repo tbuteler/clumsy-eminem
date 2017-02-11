@@ -9,12 +9,6 @@
     "grunt-contrib-uglify": "*",
     "grunt-contrib-clean": "*",
     "grunt-contrib-less": "*",
-    "grunt-contrib-watch": "*"
-  },
-  "eslintConfig": {
-    "globals": {
-        "$": false,
-        "handover": false
-    }
+    "grunt-contrib-watch": "*",
+    "eslint": "^3.11.1"
   }
-}
